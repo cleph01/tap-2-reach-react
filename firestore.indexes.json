@@ -1,0 +1,19 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "conversation",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "businessTwilioNumber",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "created",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

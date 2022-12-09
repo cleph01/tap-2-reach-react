@@ -1,0 +1,12 @@
+.ChannelNav div {
+    font-size: 90%;
+    padding: 4px 20px;
+    display: block;
+    text-decoration: none;
+    color: #fff;
+    cursor: pointer;
+}
+
+.ChannelNav a.active {
+    background: hsl(30, 50%, 50%);
+}

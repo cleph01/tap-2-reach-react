@@ -1,0 +1,21 @@
+.reminderContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .reminderWrapper {
+        display: flex;
+        justify-content: space-around;
+        background-color: #fafafa;
+        width: 75%;
+        margin-top: 2rem;
+        padding: 3rem;
+
+        .reminderCustomer_list_wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+        }
+    }
+}
