@@ -145,50 +145,43 @@ const Notification = () => {
     console.log("Selected Customer: ", selectedCustomer);
 
     return (
-        <div className="Channel">
-            <div className="ChannelMain">
-                <ChannelInfo />
-                <Calendar />
-                <div className="customer_list_wrapper">
-                    <div className="customer_list">
-                        {/* {filteredCustomers?.map((customer, index) => (
+        <div>
+            <Calendar />
+            <div className="customer_list_wrapper">
+                <div className="customer_list">
+                    {/* {filteredCustomers?.map((customer, index) => (
                             <CustomerListItem
                                 key={index}
                                 customer={customer}
                                 setSelectedCustomer={setSelectedCustomer}
                             />
                         ))} */}
-                    </div>
                 </div>
-                <div
-                    className="date_picker_wrapper"
-                    style={{ display: "flex" }}
-                >
-                    <NotificationDatePicker
-                        date={date}
-                        setDate={setDate}
-                        selectedCustomer={selectedCustomer}
-                    />
-                    <TimePicker time={time} setTime={setTime} />
-                </div>
-                <div className="text_area">
-                    <TextField
-                        id="outlined-multiline-static"
-                        label="Message To Send"
-                        multiline
-                        rows={4}
-                        value={reminderMessage}
-                        onChange={handleMesssageChange}
-                        placeholder="Enter Message"
-                        inputProps={{ maxLength: 140 }}
-                        sx={{ width: "100%" }}
-                    />
-                </div>
-                <Button variant="contained" color="primary" onClick={onSubmit}>
-                    Submit
-                </Button>
             </div>
-            <ReminderMembers businessId={businessId} />
+            <div className="date_picker_wrapper" style={{ display: "flex" }}>
+                <NotificationDatePicker
+                    date={date}
+                    setDate={setDate}
+                    selectedCustomer={selectedCustomer}
+                />
+                <TimePicker time={time} setTime={setTime} />
+            </div>
+            <div className="text_area">
+                <TextField
+                    id="outlined-multiline-static"
+                    label="Message To Send"
+                    multiline
+                    rows={4}
+                    value={reminderMessage}
+                    onChange={handleMesssageChange}
+                    placeholder="Enter Message"
+                    inputProps={{ maxLength: 140 }}
+                    sx={{ width: "100%" }}
+                />
+            </div>
+            <Button variant="contained" color="primary" onClick={onSubmit}>
+                Submit
+            </Button>
         </div>
     );
 };

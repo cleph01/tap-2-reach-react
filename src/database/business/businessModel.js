@@ -9,6 +9,8 @@ import {
     orderBy,
     setDoc,
     getDoc,
+    Timestamp,
+    addDoc,
 } from "firebase/firestore";
 
 import { db } from "../../utils/db/firebaseConfig";
@@ -106,8 +108,6 @@ const useGetBusinessCustomers = (businessId) => {
 
 // Get All Customers by Customer id / Path
 const getCustomers = async (customers) => {
-
-    
     const members = await Promise.all(
         await customers.map(async (customer) => {
             const docRef = await getDoc(doc(db, customer.customer.path));
@@ -140,6 +140,86 @@ const createChannel = async (businessId, customerId) => {
     }
 };
 
+// Get All the Blast Groups the Business Created
+const useGetAllGroups = (businessId) => {
+    const [groups, setGroups] = useState();
+
+    useEffect(() => {
+        const collectionRef = collection(
+            db,
+            `businesses/${businessId}/smsGroups`
+        );
+
+        let q = query(collectionRef);
+
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            setGroups(
+                querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }))
+            );
+        });
+
+        return unsubscribe;
+    }, []);
+
+    return groups;
+};
+
+// Get All the Blast Groups the Customer has been assigned to
+const useGetCustomerGroups = (businessId, customerId) => {
+    const [groups, setGroups] = useState();
+
+    useEffect(() => {
+        const collectionRef = collection(
+            db,
+            `businesses/${businessId}/smsGroups`
+        );
+
+        let q = query(
+            collectionRef,
+            where("members", "array-contains", customerId)
+        );
+
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            setGroups(
+                querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }))
+            );
+        });
+
+        return unsubscribe;
+    }, []);
+
+    return groups;
+};
+
+const createSmsGroup = async (businessId, groupName) => {
+    console.log("BusinessId and GroupName: ", businessId, groupName);
+    try {
+        const docRef = await addDoc(
+            collection(db, `businesses/${businessId}/smsGroups`),
+            {
+                groupName: groupName,
+                members: [],
+                createdOn: Timestamp.fromDate(new Date()),
+            }
+        );
+
+        // console.log("DeCreF: ", docRef);
+        if (docRef.id) {
+            console.log("New SMS Group Created: ", docRef.id);
+        } else {
+            console.log("Something went wrong creating the SMS Group");
+        }
+    } catch (error) {
+        console.log("Error Creating new SMS Group: ", error);
+    }
+};
+
 export {
     useGetChatChannels,
     useGetDoc,
@@ -147,4 +227,7 @@ export {
     useGetBusinessCustomers,
     createChannel,
     getCustomers,
+    useGetAllGroups,
+    useGetCustomerGroups,
+    createSmsGroup,
 };

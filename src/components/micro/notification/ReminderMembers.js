@@ -39,7 +39,7 @@ function Members({ businessId, setSelectedCustomer }) {
 
     console.log("Set Filtered Cusomers: ", filteredMembers);
     return (
-        <div className="Members">
+        <div>
             <Search
                 setFilteredMembers={setFilteredMembers}
                 filteredMembers={filteredMembers}

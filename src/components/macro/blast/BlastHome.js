@@ -31,6 +31,10 @@ import {
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import ReminderMembers from "../../micro/notification/ReminderMembers";
+import {
+    useGetAllGroups,
+    useGetCustomerGroups,
+} from "../../../database/business/businessModel";
 
 const BlastHome = () => {
     const [time, setTime] = useState({ hour: "", minute: "", meridiem: "" });
@@ -150,72 +154,79 @@ const BlastHome = () => {
     console.log("Selected Customer: ", selectedCustomer);
 
     return (
-        <div className="Channel">
-            <div className="ChannelMain">
-                <ChannelInfo />
-                <div>Groups</div>
+        <div style={{ flex: "1", display: "flex", flexDirection: "column" }}>
+            <div>Groups</div>
+            <Groups businessId={businessId} />
+            <div style={{ flexShrink: "0" }}>
+                {selectedCustomer && (
+                    <SelectedCustomer
+                        selectedCustomer={selectedCustomer}
+                        businessId={businessId}
+                    />
+                )}
                 <div
-                    style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        flex: "1 0 auto",
-                        padding: "10px",
-                        alignItems: "flex-start",
-                        justifyContent: "center",
-                        width: "100%",
-                    }}
+                    className="ChannelInfo"
+                    style={{ borderTop: "solid 1px #ccc" }}
                 >
-                    <CategoryBox groupName="December Birthdays" amount="333" />
-
-                    <CategoryBox groupName="Best Customers" amount="777" />
-
-                    <CategoryBox groupName="Ladies" amount="999" />
-                </div>
-                <div style={{ flexShrink: "0" }}>
-                    {selectedCustomer && (
-                        <SelectedCustomer selectedCustomer={selectedCustomer} />
-                    )}
-                    <div
-                        className="ChannelInfo"
-                        style={{ borderTop: "solid 1px #ccc" }}
-                    >
-                        <div className="Topic">
-                            Selected Contact(s):{" "}
-                            <input className="TopicInput" value="Open" />
-                        </div>
-                        <div className="ChannelName">@Contacts</div>
+                    <div className="Topic">
+                        Selected Contact(s):{" "}
+                        <input className="TopicInput" value="Open" />
                     </div>
-                    <div className="text_area">
-                        <TextField
-                            id="outlined-multiline-static"
-                            label="Message To Send"
-                            multiline
-                            rows={4}
-                            value={reminderMessage}
-                            onChange={handleMesssageChange}
-                            placeholder="Enter Message"
-                            inputProps={{ maxLength: 140 }}
-                            sx={{ width: "100%" }}
-                        />
-                    </div>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={onSubmit}
-                    >
-                        Submit
-                    </Button>
+                    <div className="ChannelName">@Contacts</div>
                 </div>
+                <div className="text_area">
+                    <TextField
+                        id="outlined-multiline-static"
+                        label="Message To Send"
+                        multiline
+                        rows={4}
+                        value={reminderMessage}
+                        onChange={handleMesssageChange}
+                        placeholder="Enter Message"
+                        inputProps={{ maxLength: 140 }}
+                        sx={{ width: "100%" }}
+                    />
+                </div>
+                <Button variant="contained" color="primary" onClick={onSubmit}>
+                    Submit
+                </Button>
             </div>
-            <ReminderMembers
-                businessId={businessId}
-                setSelectedCustomer={setSelectedCustomer}
-            />
         </div>
     );
 };
 
-const SelectedCustomer = ({ selectedCustomer }) => {
+const Groups = ({ businessId }) => {
+    const groups = useGetAllGroups(businessId);
+
+    console.log("Groups: ", groups);
+
+    return (
+        <div
+            style={{
+                display: "flex",
+                flexWrap: "wrap",
+                flex: "1 0 auto",
+                padding: "10px",
+                width: "100%",
+            }}
+        >
+            {groups?.map((group, index) => (
+                <CategoryBox
+                    groupName={group.groupName}
+                    amount={group.members.length}
+                />
+            ))}
+
+            <CategoryBox groupName="Best Customers" amount="777" />
+
+            <CategoryBox groupName="Ladies" amount="999" />
+        </div>
+    );
+};
+const SelectedCustomer = ({ selectedCustomer, businessId }) => {
+    const groups = useGetCustomerGroups(businessId, selectedCustomer.id);
+
+    console.log("custoemr group: ", groups);
     return (
         <div>
             Selected Customer
@@ -281,23 +292,19 @@ const SelectedCustomer = ({ selectedCustomer }) => {
                                 </Typography>
                             </div>
                             <div>
-                                Already in following groups:
-                                <Typography
-                                    sx={{ display: "inline" }}
-                                    component="span"
-                                    variant="body2"
-                                    color="text.primary"
-                                >
-                                    <li>December Birthdays</li>
-                                </Typography>
-                                <Typography
-                                    sx={{ display: "inline" }}
-                                    component="span"
-                                    variant="body2"
-                                    color="text.primary"
-                                >
-                                    <li>Best Customers</li>
-                                </Typography>
+                                {groups?.length > 0
+                                    ? "Already in following groups:"
+                                    : "** Not Part of an SMS Group Yet **"}
+                                {groups?.map((group, index) => (
+                                    <Typography
+                                        sx={{ display: "inline" }}
+                                        component="span"
+                                        variant="body2"
+                                        color="text.primary"
+                                    >
+                                        <li>{group.groupName}</li>
+                                    </Typography>
+                                ))}
                             </div>
                         </>
                     }
