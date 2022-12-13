@@ -4,13 +4,7 @@ import { collection, addDoc, Timestamp } from "firebase/firestore";
 
 import { db } from "../../../utils/db/firebaseConfig";
 
-// import moment from "moment";
-
-import NotificationDatePicker from "../../micro/reminder/NotificationDatePicker";
-import TimePicker from "../../micro/reminder/TimePicker";
-import CustomerListItem from "../../micro/reminder/CustomerListItem";
-import ChannelInfo from "../../micro/chat/ChannelInfo";
-import Calendar from "../../micro/calendar/Calendar";
+import ChatMembers from "../../micro/chat/ChatMembers";
 
 import {
     Avatar,
@@ -36,6 +30,31 @@ import {
     useGetCustomerGroups,
 } from "../../../database/business/businessModel";
 
+import styled from "styled-components";
+
+const Container = styled.div`
+    display: flex;
+    flex: 1;
+    height: 100%;
+`;
+
+const MainSection = styled.section`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-right: 10px;
+`;
+
+const RightSidebar = styled.section`
+    padding: 8px;
+    border-left: 1px solid #eee;
+    width: 150px;
+`;
+
+const Body = styled.section`
+    display: flex;
+`;
+
 const BlastHome = () => {
     const [time, setTime] = useState({ hour: "", minute: "", meridiem: "" });
     const [date, setDate] = useState(null);
@@ -45,35 +64,6 @@ const BlastHome = () => {
     const [reminderMessage, setReminderMessage] = useState("");
 
     const businessId = "fpVAtpBjJLPUanlCydra";
-
-    const [customers, setCustomers] = useState([
-        {
-            id: "R6O1CPHACsmjvjWxzaFN",
-            firstName: "Charlie",
-            lastName: "Montoya",
-            cellNumber: "+19143125729",
-            created: new Date("11/23/2022 9:13 AM"),
-            email: "charlesmontoya79@gmail.com",
-        },
-        {
-            id: "sRQx04SgjWVR8m2kKcOW",
-            firstName: "Wilson",
-            lastName: "Viera",
-            cellNumber: "+19143562425",
-            created: new Date("09/23/2021 5:27 PM"),
-            email: "wil.viera@gmail.com",
-        },
-        {
-            id: "uvtNOuk02WtuBH7ruLTR",
-            firstName: "Jayson",
-            lastName: "Snell",
-            cellNumber: "+19144332800",
-            created: new Date("07/11/2021 1:27 PM"),
-            email: "mirkcury@gmail.com",
-        },
-    ]);
-
-    const [filteredCustomers, setFilteredCustomers] = useState(customers);
 
     const handleMesssageChange = (e) => {
         e.preventDefault();
@@ -95,16 +85,6 @@ const BlastHome = () => {
     };
 
     console.log("Found Customer: ");
-
-    const handleSearch = (e) => {
-        e.preventDefault();
-
-        const result = customers?.filter((customer) =>
-            customer[searchLabel].startsWith(searchTerm)
-        );
-
-        setFilteredCustomers(result);
-    };
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -154,44 +134,102 @@ const BlastHome = () => {
     console.log("Selected Customer: ", selectedCustomer);
 
     return (
-        <div style={{ flex: "1", display: "flex", flexDirection: "column" }}>
-            <div>Groups</div>
-            <Groups businessId={businessId} />
-            <div style={{ flexShrink: "0" }}>
-                {selectedCustomer && (
-                    <SelectedCustomer
-                        selectedCustomer={selectedCustomer}
-                        businessId={businessId}
-                    />
-                )}
-                <div
-                    className="ChannelInfo"
-                    style={{ borderTop: "solid 1px #ccc" }}
-                >
-                    <div className="Topic">
-                        Selected Contact(s):{" "}
-                        <input className="TopicInput" value="Open" />
+        <Container>
+            <MainSection>
+                <Header />
+                <Body>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            height: "750px",
+                            flex: "1",
+                        }}
+                    >
+                        <h1>Your Groups</h1>
+                        <Groups businessId={businessId} />
                     </div>
-                    <div className="ChannelName">@Contacts</div>
-                </div>
-                <div className="text_area">
-                    <TextField
-                        id="outlined-multiline-static"
-                        label="Message To Send"
-                        multiline
-                        rows={4}
-                        value={reminderMessage}
-                        onChange={handleMesssageChange}
-                        placeholder="Enter Message"
-                        inputProps={{ maxLength: 140 }}
-                        sx={{ width: "100%" }}
-                    />
-                </div>
-                <Button variant="contained" color="primary" onClick={onSubmit}>
-                    Submit
-                </Button>
-            </div>
-        </div>
+
+                    {selectedCustomer && (
+                        <SelectedCustomer
+                            selectedCustomer={selectedCustomer}
+                            businessId={businessId}
+                        />
+                    )}
+
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            flex: "1",
+                            marginTop: "100px",
+                        }}
+                    >
+                        <TextField
+                            id="outlined-multiline-static"
+                            label="Message To Send"
+                            multiline
+                            rows={4}
+                            value={reminderMessage}
+                            onChange={handleMesssageChange}
+                            placeholder="Enter Message"
+                            inputProps={{ maxLength: 140 }}
+                            sx={{ width: "100%" }}
+                        />
+
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={onSubmit}
+                        >
+                            Submit
+                        </Button>
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                margin: "6px",
+                                fontSize: "small",
+                                color: "grey",
+                            }}
+                        >
+                            <div>Templates</div>
+                            <div>Save to Templates</div>
+                        </div>
+                    </div>
+                </Body>
+            </MainSection>
+            <RightSidebar>
+                <ChatMembers businessId={businessId} />
+            </RightSidebar>
+        </Container>
+    );
+};
+
+const HeaderContainer = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    font-weight: bold;
+    border-bottom: solid 1px #ccc;
+`;
+
+const Name = styled.div``;
+const CellPPhone = styled.div`
+    font-size: smaller;
+    margin-left: 15px;
+`;
+
+const Recipient = styled.div``;
+
+const Header = () => {
+    return (
+        <HeaderContainer>
+            <Recipient>
+                <Name>SMS Center </Name>
+            </Recipient>
+        </HeaderContainer>
     );
 };
 
@@ -205,9 +243,10 @@ const Groups = ({ businessId }) => {
             style={{
                 display: "flex",
                 flexWrap: "wrap",
-                flex: "1 0 auto",
+
                 padding: "10px",
-                width: "100%",
+                width: "600px",
+                height: "200px",
             }}
         >
             {groups?.map((group, index) => (

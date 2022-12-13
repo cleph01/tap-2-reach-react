@@ -39,13 +39,7 @@ function Members({ businessId, setSelectedCustomer }) {
 
     console.log("Set Filtered Cusomers: ", filteredMembers);
     return (
-        <div
-            style={{
-                padding: "20px",
-                borderLeft: "solid 1px #ccc",
-                width: "150px",
-            }}
-        >
+        <div>
             <Search
                 setFilteredMembers={setFilteredMembers}
                 filteredMembers={filteredMembers}

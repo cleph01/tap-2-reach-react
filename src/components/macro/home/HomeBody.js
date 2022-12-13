@@ -1,19 +1,42 @@
-import React from "react";
-import { Switch, Route } from "react-router-dom";
-import ChatWelcome from "../../micro/chat/ChatWelcome";
-import ChatBody from "../chat/ChatBody";
+import styled from "styled-components";
 
-import Channel from "../chat/Channel";
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+`;
 
-import NotificationHome from "../reminder/ReminderHome";
-import BlastHome from "../blast/BlastHome";
-import Header from "../../layout/Header.js";
+const DetailsWrapper = styled.article`
+    width: 500px;
+    border-radius: 10px;
+`;
 
 function HomeBody() {
     return (
-        <div style={{ display: "flex", flexDirection: "column" }}>
-            <div>Home</div>
-        </div>
+        <Container>
+            <h1>Help your customers help you grow your business.</h1>
+            <h2>
+                Modern Easy-to-use tools to help customers reach, promote, and
+                help YOU grow.
+            </h2>
+            <div>
+                <h3>Attract more customers and keep them coming back.</h3>
+                <h4>Reviews</h4>
+                Improve your reputation
+                <h4>Website to SMS Chat</h4> Capture website leads Text
+                Marketing Grow with text campaigns Customer <h4>ShoutOuts</h4>{" "}
+                Promotes you to their inner circle
+            </div>
+
+            {/* <img
+                src="https://cms.podium.com/wp-content/uploads/2022/04/HN-Homepage-2.gif"
+                alt="texting"
+            />
+            <img
+                src="https://cms.podium.com/wp-content/uploads/2022/03/HN-Homepage-1.gif"
+                alt="reviews"
+            /> */}
+        </Container>
     );
 }
 

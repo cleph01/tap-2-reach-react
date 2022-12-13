@@ -58,11 +58,19 @@ const ConfirmButton = styled.button`
     background: transparent;
 `;
 
+const InputWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 50px;
+`;
 const InputNumber = () => {
     return (
         <HeaderContainer>
-            <RecipientInput placeholder="Enter Number" />
-
+            <InputWrapper>
+                <RecipientInput placeholder="Enter Name" />
+                <RecipientInput placeholder="Enter Number" />
+            </InputWrapper>
             <ConfirmButton>Start Chat</ConfirmButton>
         </HeaderContainer>
     );

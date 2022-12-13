@@ -68,6 +68,7 @@ function ReminderSideBar() {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                flex: "1",
             }}
         >
             <div style={{ width: "96%" }}>
@@ -84,7 +85,7 @@ function ReminderSideBar() {
                         id="outlined-multiline-static"
                         label="Message To Send"
                         multiline
-                        rows={2}
+                        rows={4}
                         value={reminderMessage}
                         onChange={handleMesssageChange}
                         placeholder="Enter Message"
@@ -101,6 +102,18 @@ function ReminderSideBar() {
                     >
                         Submit
                     </Button>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            margin: "6px",
+                            fontSize: "small",
+                            color: "grey",
+                        }}
+                    >
+                        <div>Templates</div>
+                        <div>Save to Templates</div>
+                    </div>
                 </div>
             </div>
         </div>

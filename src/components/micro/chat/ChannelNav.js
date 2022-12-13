@@ -27,17 +27,19 @@ function ChannelNav() {
             <Title>Channels</Title>
             <Link to="/business/chat/fpVAtpBjJLPUanlCydra"># Help Desk</Link>
             {channels.map((channel, index) => (
-                <ChannelListItem key={index} channel={channel} />
+                <ChannelListItem key={index} index={index} channel={channel} />
             ))}
         </Container>
     );
 }
 
-const ChannelListItem = ({ channel, handleIdChange, key }) => {
+const ChannelListItem = ({ channel, handleIdChange, index }) => {
     const author = useGetDoc(`customers/${channel.customerId}`);
     console.log("Author: ", author);
     return (
-        <Link to={`/business/chat/${channel.id}`}># {author?.displayName}</Link>
+        <Link key={index} to={`/business/chat/${channel.id}`}>
+            # {author?.displayName}
+        </Link>
     );
 };
 
