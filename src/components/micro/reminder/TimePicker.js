@@ -17,20 +17,20 @@ const TimePicker = ({ time, setTime }) => {
     return (
         <Box
             sx={{
-                minWidth: 275,
+                minWidth: 165,
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
             }}
         >
             <FormControl fullWidth>
-                <InputLabel id="hour-label">Hour</InputLabel>
+                <InputLabel id="hour-label">H</InputLabel>
                 <Select
                     labelId="hour-label"
                     id="demo-simple-select"
                     name="hour"
                     value={time.hour}
-                    label="Hour"
+                    label="Hr"
                     onChange={handleChange}
                 >
                     <MenuItem value={"1"}>1</MenuItem>
@@ -49,13 +49,13 @@ const TimePicker = ({ time, setTime }) => {
             </FormControl>
             <div sx={{ margin: "50px 50px" }}> : </div>
             <FormControl fullWidth>
-                <InputLabel id="hour-label">Minute</InputLabel>
+                <InputLabel id="hour-label">M</InputLabel>
                 <Select
                     labelId="hour-label"
                     id="demo-simple-select"
                     name="minute"
                     value={time.minute}
-                    label="Hour"
+                    label="Min"
                     onChange={handleChange}
                 >
                     <MenuItem value={"00"}>00</MenuItem>
@@ -65,13 +65,13 @@ const TimePicker = ({ time, setTime }) => {
                 </Select>
             </FormControl>
             <FormControl fullWidth>
-                <InputLabel id="meridiem-label">AM/PM</InputLabel>
+                <InputLabel id="meridiem-label">P</InputLabel>
                 <Select
                     labelId="meridiem-label"
                     id="demo-simple-select"
                     name="meridiem"
                     value={time.meridiem}
-                    label="Hour"
+                    label="PM"
                     onChange={handleChange}
                 >
                     <MenuItem value={"AM"}>AM</MenuItem>

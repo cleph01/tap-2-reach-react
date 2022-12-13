@@ -1,8 +1,8 @@
 import React from "react";
 
 import { Route } from "react-router-dom";
-import Members from "../micro/chat/Members";
-import ReminderMembers from "../micro/notification/ReminderMembers";
+import Members from "../micro/chat/ChatMembers";
+import ReminderMembers from "../micro/reminder/ReminderMembers";
 
 function RightSideBar({ businessId }) {
     return (
@@ -13,11 +13,15 @@ function RightSideBar({ businessId }) {
                 width: "150px",
             }}
         >
+            <Route exact path="/">
+                <Members businessId={businessId} />
+            </Route>
+
             <Route path="/business/chat">
                 <Members businessId={businessId} />
             </Route>
 
-            <Route path="/business/notification/add-reminder">
+            <Route path="/business/reminder">
                 <ReminderMembers businessId={businessId} />
             </Route>
 

@@ -2,7 +2,7 @@ import React from "react";
 import { Switch, Route } from "react-router-dom";
 import ChatInputBox from "../../micro/chat/ChatInputBox";
 import ChatWelcome from "../../micro/chat/ChatWelcome";
-import Members from "../../micro/chat/Members";
+import Members from "../../micro/chat/ChatMembers";
 import Messages from "../../micro/chat/Messages";
 
 import Channel from "./Channel";

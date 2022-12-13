@@ -6,9 +6,9 @@ import { db } from "../../../utils/db/firebaseConfig";
 
 // import moment from "moment";
 
-import NotificationDatePicker from "../../micro/notification/DatePicker";
-import TimePicker from "../../micro/notification/TimePicker";
-import CustomerListItem from "../../micro/notification/CustomerListItem";
+import NotificationDatePicker from "../../micro/reminder/NotificationDatePicker";
+import TimePicker from "../../micro/reminder/TimePicker";
+import CustomerListItem from "../../micro/reminder/CustomerListItem";
 import ChannelInfo from "../../micro/chat/ChannelInfo";
 import Calendar from "../../micro/calendar/Calendar";
 
@@ -30,7 +30,7 @@ import {
     Typography,
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
-import ReminderMembers from "../../micro/notification/ReminderMembers";
+import ReminderMembers from "../../micro/reminder/ReminderMembers";
 import {
     useGetAllGroups,
     useGetCustomerGroups,

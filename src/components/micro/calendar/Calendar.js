@@ -5,7 +5,11 @@ import dayGridPlugin from "@fullcalendar/daygrid"; // a plugin!
 
 function Calendar() {
     return (
-        <FullCalendar plugins={[dayGridPlugin]} initialView="dayGridMonth" />
+        <FullCalendar
+            maxHeigh="150px"
+            plugins={[dayGridPlugin]}
+            initialView="dayGridMonth"
+        />
     );
 }
 

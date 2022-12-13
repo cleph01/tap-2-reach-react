@@ -1,16 +1,38 @@
+import { useParams, Link } from "react-router-dom";
+
 import {
     useGetChatMessages,
     useGetDoc,
 } from "../../../database/business/businessModel.js";
 
-function Messages({ businessId, customerId }) {
+import styled from "styled-components";
+
+const Container = styled.div`
+    flex: 1;
+    padding: 10px 20px 10px 20px;
+    line-height: 1.3;
+    overflow: auto;
+`;
+
+const EndOfMessages = styled.div`
+    text-align: center;
+    color: hsl(200, 50%, 50%);
+    padding: 5px;
+`;
+
+function Messages({ businessId }) {
+    const { customerId } = useParams();
+
+    console.log("CustomerId at Messages: ", customerId);
+
     const messages = useGetChatMessages(
         `chats/${businessId}/channels/${customerId}/messages`
     );
 
     return (
-        <div className="Messages">
-            <div className="EndOfMessages">That's every message!</div>
+        <Container>
+            <Header />
+            <EndOfMessages>That's every message!</EndOfMessages>
             {messages.map((message, index) => {
                 const previous = messages[index - 1];
                 const showDay = false;
@@ -26,9 +48,43 @@ function Messages({ businessId, customerId }) {
                     </div>
                 );
             })}
-        </div>
+            {/* <ChatMembers businessId={businessId} /> */}
+        </Container>
     );
 }
+
+const HeaderContainer = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    font-weight: bold;
+    border-bottom: solid 1px #ccc;
+`;
+
+const Name = styled.div``;
+const CellPPhone = styled.div`
+    font-size: smaller;
+    margin-left: 15px;
+`;
+
+const Recipient = styled.div``;
+
+const Header = () => {
+    const { customerId } = useParams();
+
+    const customer = useGetDoc(`customers/${customerId}`);
+
+    return (
+        <HeaderContainer>
+            <Recipient>
+                <Name>@ {customer?.displayName}</Name>
+                <CellPPhone>{customer?.cellPhone}</CellPPhone>
+            </Recipient>
+            <Link to="/business/chat">New Message</Link>
+        </HeaderContainer>
+    );
+};
 
 const FirsMessageFromUser = ({ message, showDay }) => {
     const author = useGetDoc(message.user.path);

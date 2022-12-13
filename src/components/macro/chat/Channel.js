@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import Members from "../../micro/chat/Members";
+import Members from "../../micro/chat/ChatMembers";
 import ChannelInfo from "../../micro/chat/ChannelInfo";
 import Messages from "../../micro/chat/Messages";
 import ChatInputBox from "../../micro/chat/ChatInputBox";

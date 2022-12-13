@@ -5,32 +5,14 @@ import ChatBody from "../chat/ChatBody";
 
 import Channel from "../chat/Channel";
 
-import NotificationHome from "../notification/NotificationHome";
+import NotificationHome from "../reminder/ReminderHome";
 import BlastHome from "../blast/BlastHome";
 import Header from "../../layout/Header.js";
 
 function HomeBody() {
     return (
         <div style={{ display: "flex", flexDirection: "column" }}>
-            <Header />
-            <Switch>
-                <Route exact path="/">
-                    <div>Home</div>
-                </Route>
-                <Route exact path="/business/chat/:customerId">
-                    <ChatBody />
-                </Route>
-                <Route exact path="/business/chat">
-                    <ChatWelcome />
-                </Route>
-
-                <Route path="/business/notification">
-                    <NotificationHome />
-                </Route>
-                <Route path="/business/sms">
-                    <BlastHome />
-                </Route>
-            </Switch>
+            <div>Home</div>
         </div>
     );
 }

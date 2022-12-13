@@ -1,20 +1,18 @@
 import React from "react";
 
-import Nav from "./components/layout/Nav";
-import RightSideBar from "./components/layout/RightSideBar";
+import LeftSideBar from "./components/layout/LeftSideBar";
+
 import Main from "./components/layout/Main";
 
 function App() {
     const businessId = "fpVAtpBjJLPUanlCydra";
 
     return (
-        <div className="App">
-            <Nav />
+        <main className="App">
+            <LeftSideBar />
 
             <Main businessId={businessId} />
-
-            <RightSideBar businessId={businessId} />
-        </div>
+        </main>
     );
 }
 

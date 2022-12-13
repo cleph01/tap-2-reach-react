@@ -1,20 +1,26 @@
 import { Link } from "react-router-dom";
 
-function HomeNav({ businessId, setCustomerId }) {
-    return (
-        <div
-            style={{
-                paddingBottom: "5px",
+import styled from "styled-components";
 
-                marginBottom: "5px",
-            }}
-        >
-            <div style={{ padding: "8px 20px" }}>Menu</div>
+const Container = styled.div`
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+`;
+
+const Title = styled.p`
+    font-size: large;
+    padding: 0px 20px;
+`;
+
+function HomeNav() {
+    return (
+        <Container>
+            <Title>Menu</Title>
             <Link to="/">Home</Link>
             <Link to="/business/chat">Chat</Link>
-            <Link to="/business/notification">View Reminders</Link>
+            <Link to="/business/reminder">View Reminders</Link>
             <Link to="/business/sms">Send Blast</Link>
-        </div>
+        </Container>
     );
 }
 

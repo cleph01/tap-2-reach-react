@@ -5,19 +5,31 @@ import {
 
 import { Link } from "react-router-dom";
 
+import styled from "styled-components";
+
+const Container = styled.div`
+    border-top: 1px #eee solid;
+    padding-top: 5px;
+`;
+
+const Title = styled.p`
+    font-size: large;
+    padding: 0px 20px;
+`;
+
 function ChannelNav() {
     const businessId = "fpVAtpBjJLPUanlCydra";
 
     const channels = useGetChatChannels(businessId);
 
     return (
-        <div style={{ borderTop: "1px #eee solid", paddingTop: "5px" }}>
-            <div style={{ padding: "8px 20px" }}>Channels</div>
+        <Container>
+            <Title>Channels</Title>
             <Link to="/business/chat/fpVAtpBjJLPUanlCydra"># Help Desk</Link>
             {channels.map((channel, index) => (
                 <ChannelListItem key={index} channel={channel} />
             ))}
-        </div>
+        </Container>
     );
 }
 

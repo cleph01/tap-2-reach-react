@@ -2,38 +2,33 @@ import React from "react";
 import { Route, Switch, useParams } from "react-router-dom";
 
 import ChatBody from "../macro/chat/ChatBody";
-import NotificationHome from "../macro/notification/NotificationHome";
+import ReminderHome from "../macro/reminder/ReminderHome";
 import BlastHome from "../macro/blast/BlastHome";
 import HomeBody from "../macro/home/HomeBody";
-import Header from "./Header";
-import ChatWelcome from "../micro/chat/ChatWelcome";
-import Messages from "../micro/chat/Messages";
-import ChatInputBox from "../micro/chat/ChatInputBox";
+import ChatMain from "../macro/chat/ChatMain";
 
+import styled from "styled-components";
+
+const Container = styled.section`
+    flex: 1;
+`;
 function Main({ businessId }) {
-    const { customerId } = useParams();
-    console.log("CustomerId: ", customerId);
     return (
-        <main style={{ flex: "1", display: "flex", flexDirection: "column" }}>
-            <Header />
+        <Container>
             <Route exact path="/">
                 <HomeBody />
             </Route>
-            <Route exact path="/business/notification/add-reminder">
-                <NotificationHome />
+            <Route path="/business/reminder">
+                <ReminderHome />
             </Route>
             <Route exact path="/business/sms">
                 <BlastHome />
             </Route>
 
-            <Route path="/business/chat/:customerId">
-                <Messages businessId={businessId} customerId={customerId} />
-                <ChatInputBox businessId={businessId} />
-            </Route>
             <Route path="/business/chat">
-                <ChatWelcome />
+                <ChatMain businessId={businessId} />
             </Route>
-        </main>
+        </Container>
     );
 }
 

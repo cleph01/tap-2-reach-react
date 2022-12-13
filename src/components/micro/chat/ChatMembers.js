@@ -22,7 +22,7 @@ function Members({ businessId }) {
     const members = useGetBusinessCustomers(businessId);
     console.log("Members: ", members);
     return (
-        <div className="Members">
+        <div>
             <Search />
             <div>
                 {members.map((member, index) => (
@@ -103,7 +103,7 @@ const Search = () => {
                     <MenuItem value={"cellNumber"}>Cell Number</MenuItem>
                 </Select>
             </FormControl>
-            <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
+            <FormControl sx={{ m: 1 }} variant="outlined">
                 <InputLabel htmlFor="outlined-adornment-password">
                     Search
                 </InputLabel>

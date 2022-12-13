@@ -8,7 +8,7 @@ import { getFirestore } from "firebase/firestore";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "AIzaSyDG6Ehp5Nw-plb5NYaB3-8SsSVw5i5WoMk",
+    apiKey: "AIzaSyAGoszk3W9p1HzFkODkLrt3CEuJIjPZr1Y",
     authDomain: "tap2reach.firebaseapp.com",
     projectId: "tap2reach",
     storageBucket: "tap2reach.appspot.com",

@@ -8,10 +8,10 @@ import CustomerListItem from "./CustomerListItem";
 
 const NotificationDatePicker = ({ date, setDate, selectedCustomer }) => {
     return (
-        <div>
-            {selectedCustomer.firstName && (
+        <div style={{ minWidth: "165px" }}>
+            {/* {selectedCustomer.firstName && (
                 <CustomerListItem customer={selectedCustomer} />
-            )}
+            )} */}
             <pre>{`Date Picker: ${date}`}</pre>
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <DatePicker
