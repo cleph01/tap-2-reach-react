@@ -17,9 +17,12 @@ function HomeNav() {
         <Container>
             <Title>Menu</Title>
             <Link to="/">Home</Link>
-            <Link to="/business/chat">Chat</Link>
+            <Link to="/business/chat">Chat Room</Link>
+            <Link to="/business/influencers">Top Influencers</Link>
+            <Link to="/business/customers">All Customers</Link>
             <Link to="/business/reminder">View Reminders</Link>
             <Link to="/business/sms">Send Blast</Link>
+            <Link to="/business/reviews">Google Reviews</Link>
         </Container>
     );
 }

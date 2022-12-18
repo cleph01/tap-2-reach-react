@@ -1,13 +1,15 @@
 import React from "react";
 import { Route, Switch, useParams } from "react-router-dom";
 
-import ChatBody from "../macro/chat/ChatBody";
 import ReminderHome from "../macro/reminder/ReminderHome";
 import BlastHome from "../macro/blast/BlastHome";
 import HomeBody from "../macro/home/HomeBody";
-import ChatMain from "../macro/chat/ChatMain";
+import ChatHome from "../macro/chat/ChatHome";
+import ReviewHome from "../macro/reviews/ReviewHome";
+import TopInfluencers from "../macro/influencers/TopInfluencers";
 
 import styled from "styled-components";
+import AllCustomersHome from "../macro/customers/AllCustomersHome";
 
 const Container = styled.section`
     flex: 1;
@@ -24,9 +26,17 @@ function Main({ businessId }) {
             <Route exact path="/business/sms">
                 <BlastHome />
             </Route>
-
+            <Route exact path="/business/customers">
+                <AllCustomersHome />
+            </Route>
+            <Route exact path="/business/influencers">
+                <TopInfluencers />
+            </Route>
             <Route path="/business/chat">
-                <ChatMain businessId={businessId} />
+                <ChatHome businessId={businessId} />
+            </Route>
+            <Route path="/business/reviews">
+                <ReviewHome businessId={businessId} />
             </Route>
         </Container>
     );

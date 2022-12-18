@@ -53,6 +53,8 @@ const RightSidebar = styled.section`
 
 const Body = styled.section`
     display: flex;
+    flex-direction: column;
+    height: 100%;
 `;
 
 const BlastHome = () => {
@@ -150,51 +152,69 @@ const BlastHome = () => {
                         <Groups businessId={businessId} />
                     </div>
 
-                    {selectedCustomer && (
+                    {/* {selectedCustomer && (
                         <SelectedCustomer
                             selectedCustomer={selectedCustomer}
                             businessId={businessId}
                         />
-                    )}
-
+                    )} */}
                     <div
                         style={{
                             display: "flex",
-                            flexDirection: "column",
-                            flex: "1",
-                            marginTop: "100px",
+                            justifyContent: "space-between",
+                            alignItems: "end",
+                            padding: "10px",
                         }}
                     >
-                        <TextField
-                            id="outlined-multiline-static"
-                            label="Message To Send"
-                            multiline
-                            rows={4}
-                            value={reminderMessage}
-                            onChange={handleMesssageChange}
-                            placeholder="Enter Message"
-                            inputProps={{ maxLength: 140 }}
-                            sx={{ width: "100%" }}
-                        />
-
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={onSubmit}
-                        >
-                            Submit
-                        </Button>
+                        <CellPhoneBox />
                         <div
                             style={{
                                 display: "flex",
-                                justifyContent: "space-between",
-                                margin: "6px",
-                                fontSize: "small",
-                                color: "grey",
+                                flexDirection: "column",
+                                flex: "1",
+
+                                marginLeft: "10px",
                             }}
                         >
-                            <div>Templates</div>
-                            <div>Save to Templates</div>
+                            {selectedCustomer && (
+                                <SelectedCustomer
+                                    selectedCustomer={selectedCustomer}
+                                    businessId={businessId}
+                                />
+                            )}
+
+                            <InputRecipients />
+                            <TextField
+                                id="outlined-multiline-static"
+                                label="Message To Send"
+                                multiline
+                                rows={4}
+                                value={reminderMessage}
+                                onChange={handleMesssageChange}
+                                placeholder="Enter Message"
+                                inputProps={{ maxLength: 140 }}
+                                sx={{ width: "100%" }}
+                            />
+
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={onSubmit}
+                            >
+                                Submit
+                            </Button>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    margin: "6px",
+                                    fontSize: "small",
+                                    color: "grey",
+                                }}
+                            >
+                                <div>Templates</div>
+                                <div>Save to Templates</div>
+                            </div>
                         </div>
                     </div>
                 </Body>
@@ -233,6 +253,113 @@ const Header = () => {
     );
 };
 
+const PhoneContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 300px;
+    height: 380px;
+    border: 1px solid #000000;
+    border-radius: 0.5rem;
+    background-color: #2c2a2a;
+    box-shadow: 5px 5px 5px rgba(68, 68, 68, 0.6);
+`;
+
+const PhoneScreenWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    border: 1px solid #000000;
+    border-radius: 0.5rem;
+    margin-top: 0.25rem;
+    padding: 0.75rem;
+    width: 85%;
+    height: 85%;
+    font-size: 0.75rem;
+    background-color: #ffffff;
+`;
+
+const PhoneMessages = styled.div`
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+`;
+
+const MyMessage = styled(PhoneMessages)`
+    align-items: flex-end;
+    color: white;
+    margin-left: 2%;
+    position: relative;
+`;
+
+const Message = styled.div`
+    border-radius: 5px;
+    padding: 8px 15px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    display: inline-block;
+    text-align: left;
+    background: rgb(0, 120, 254);
+`;
+
+const PhoneButton = styled.div`
+    padding: 0.5rem;
+    border: 1px solid #000000;
+    border-radius: 50%;
+    margin-top: 0.25rem;
+    background-color: #ffffff;
+`;
+
+const LastMessage = styled(Message)``;
+
+const CellPhoneBox = () => {
+    return (
+        <PhoneContainer>
+            <PhoneScreenWrapper>
+                <MyMessage>
+                    <Message>bla</Message>
+                    <Message last>Send a Message</Message>
+                </MyMessage>
+            </PhoneScreenWrapper>
+            <PhoneButton></PhoneButton>
+        </PhoneContainer>
+    );
+};
+
+const RecipientInput = styled.input`
+    font: inherit;
+    border: 1px solid transparent;
+
+    &hover {
+        border-color: #ccc;
+    }
+`;
+
+const ConfirmButton = styled.button`
+    border-radius: 5px;
+    background: transparent;
+`;
+
+const InputWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 50px;
+`;
+
+const InputRecipients = () => {
+    return (
+        <HeaderContainer>
+            <InputWrapper>
+                <RecipientInput placeholder="Enter Name" />
+                <RecipientInput placeholder="Enter Number" />
+            </InputWrapper>
+            <ConfirmButton>Attach</ConfirmButton>
+        </HeaderContainer>
+    );
+};
+
 const Groups = ({ businessId }) => {
     const groups = useGetAllGroups(businessId);
 
@@ -245,8 +372,6 @@ const Groups = ({ businessId }) => {
                 flexWrap: "wrap",
 
                 padding: "10px",
-                width: "600px",
-                height: "200px",
             }}
         >
             {groups?.map((group, index) => (
@@ -361,6 +486,7 @@ const CategoryBox = ({ groupName, amount }) => {
                 justifyContent: "center",
                 alignItems: "center",
                 marginRight: "9px",
+                marginTop: "9px",
             }}
         >
             <div
@@ -382,4 +508,5 @@ const CategoryBox = ({ groupName, amount }) => {
         </div>
     );
 };
+
 export default BlastHome;

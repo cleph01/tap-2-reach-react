@@ -1,5 +1,5 @@
 import { db } from "../../../utils/db/firebaseConfig";
-
+import { useParams } from "react-router-dom";
 import { useGetDoc } from "../../../database/business/businessModel";
 
 import {
@@ -10,11 +10,12 @@ import {
     Timestamp,
 } from "firebase/firestore";
 
-function ChatInputBox({ businessId, customerId }) {
+function ChatInputBox({ businessId }) {
+    const { customerId } = useParams();
     let customer = useGetDoc(`customers/${customerId}`);
     let business = useGetDoc(`businesses/${businessId}`);
 
-    console.log("Customer: ", customer);
+    console.log("Customer at ChatInbox: ", customer);
     console.log("Business: ", business);
 
     const handleSubmit = async (e) => {
