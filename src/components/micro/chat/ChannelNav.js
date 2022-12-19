@@ -24,8 +24,8 @@ function ChannelNav() {
 
     return (
         <Container>
-            <Title>Channels</Title>
-            <Link to="/business/chat/fpVAtpBjJLPUanlCydra"># Help Desk</Link>
+            <Title>Open Channels</Title>
+            <Link to="/business/chat/"># Help Desk</Link>
             {channels.map((channel, index) => (
                 <ChannelListItem key={index} index={index} channel={channel} />
             ))}

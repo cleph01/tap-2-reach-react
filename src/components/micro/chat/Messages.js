@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import {
     useGetChatMessages,
     useGetDoc,
+    useGetCustomerByCellphone,
 } from "../../../database/business/businessModel.js";
 
 import styled from "styled-components";
@@ -73,15 +74,18 @@ const CellPPhone = styled.div`
 const Recipient = styled.div``;
 
 const Header = () => {
-    const { customerId } = useParams();
+    const { cellphone } = useParams();
 
-    const customer = useGetDoc(`customers/${customerId}`);
+    const customer = useGetCustomerByCellphone(cellphone);
 
     return (
         <HeaderContainer>
             <Recipient>
-                <Name>@ {customer?.displayName}</Name>
-                <CellPPhone>{customer?.cellPhone}</CellPPhone>
+                <Name>
+                    @{" "}
+                    {customer?.displayName ? customer?.displayName : cellphone}
+                </Name>
+                {customer?.displayName && <CellPPhone>{cellphone}</CellPPhone>}
             </Recipient>
             <Link to="/business/chat">New Message</Link>
         </HeaderContainer>

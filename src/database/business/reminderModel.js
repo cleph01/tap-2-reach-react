@@ -292,6 +292,63 @@ const createSmsGroup = async (businessId, groupName) => {
     }
 };
 
+// Get All the Blast Groups the Customer has been assigned to
+const useGetRemindersByCustomerId = (businessId, customerId) => {
+    const [reminders, setReminders] = useState();
+
+    useEffect(() => {
+        if (customerId) {
+            const collectionRef = collection(db, "notifications");
+
+            let q = query(
+                collectionRef,
+                where("customerId", "==", customerId),
+                where("businessId", "==", businessId)
+            );
+
+            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                setReminders(
+                    querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }))
+                );
+            });
+
+            return unsubscribe;
+        }
+    }, [businessId, customerId]);
+
+    return reminders;
+};
+
+// Get All Reminders by Customer id
+const getRemindersByCustomerId = async (customerId, businessId) => {
+    let reminders = [];
+
+    const collectionRef = collection(db, "notifications");
+
+    let q = query(
+        collectionRef,
+        where("customerId", "==", customerId),
+        where("businessId", "==", businessId)
+    );
+
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+        reminders.push({
+            reminderId: doc.id,
+            ...doc.data(),
+            title: doc.data().message,
+            start: new Date(
+                `${doc.data().sendOnDate} ${doc.data().sendOnTime}`
+            ),
+        });
+    });
+
+    return reminders;
+};
+
 export {
     useGetChatChannels,
     useGetDoc,
@@ -304,4 +361,6 @@ export {
     useGetCustomerGroups,
     createSmsGroup,
     useGetCustomerByCellphone,
+    useGetRemindersByCustomerId,
+    getRemindersByCustomerId,
 };

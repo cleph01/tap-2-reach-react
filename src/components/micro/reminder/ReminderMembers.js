@@ -19,7 +19,7 @@ import {
 
 import SearchIcon from "@mui/icons-material/Search";
 
-function Members({ businessId, setSelectedCustomer }) {
+function Members({ businessId, setSelectedCustomer, fetchReminders }) {
     const members = useGetBusinessCustomers(businessId);
 
     const [filteredMembers, setFilteredMembers] = useState();
@@ -35,9 +35,6 @@ function Members({ businessId, setSelectedCustomer }) {
         fetchData().catch((error) => console.log("Error: ", error));
     }, [members]);
 
-    console.log("First Fetch: ", members);
-
-    console.log("Set Filtered Cusomers: ", filteredMembers);
     return (
         <div>
             <Search
@@ -52,10 +49,14 @@ function Members({ businessId, setSelectedCustomer }) {
                         member={member}
                         businessId={businessId}
                         setSelectedCustomer={setSelectedCustomer}
+                        fetchReminders={fetchReminders}
                     />
                 ))}
 
-                <div className="Member">
+                <div
+                    className="Member"
+                    style={{ cursor: "pointer", marginTop: "6px" }}
+                >
                     <div className="MemberStatus online" />
                     cleverbot
                 </div>
@@ -64,11 +65,22 @@ function Members({ businessId, setSelectedCustomer }) {
     );
 }
 
-const Member = ({ member, businessId, setSelectedCustomer }) => {
+const Member = ({
+    member,
+    businessId,
+    setSelectedCustomer,
+    fetchReminders,
+}) => {
+    const handleSelectCustomer = (e) => {
+        e.preventDefault();
+        setSelectedCustomer(member);
+        fetchReminders(member.id);
+    };
+
     return (
         <div
-            style={{ cursor: "pointer" }}
-            onClick={() => setSelectedCustomer(member)}
+            style={{ cursor: "pointer", marginTop: "6px" }}
+            onClick={handleSelectCustomer}
             className="Member"
         >
             <div className="MemberStatus offline" />

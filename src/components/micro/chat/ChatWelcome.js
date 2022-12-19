@@ -1,4 +1,9 @@
+import { useState } from "react";
+import { useHistory } from "react-router-dom";
+
 import styled from "styled-components";
+
+import { createChannelFromOneOff } from "../../../database/business/businessModel";
 
 const Container = styled.div`
     height: 100%;
@@ -65,13 +70,40 @@ const InputWrapper = styled.div`
     height: 50px;
 `;
 const InputNumber = () => {
+    const history = useHistory();
+
+    const businessId = "fpVAtpBjJLPUanlCydra";
+
+    const [cellphone, setCellphone] = useState("");
+
+    const handleCellChange = (e) => {
+        e.preventDefault();
+
+        setCellphone(e.target.value);
+    };
+
+    const handleStartChatClick = async (e) => {
+        e.preventDefault();
+
+        const response = await createChannelFromOneOff(businessId, cellphone);
+
+        if (response !== "error") {
+            history.push(`/business/chat/${cellphone}`);
+        }
+    };
+
+    console.log("celphone at Blast Welcome: ", cellphone);
     return (
         <HeaderContainer>
             <InputWrapper>
-                <RecipientInput placeholder="Enter Name" />
-                <RecipientInput placeholder="Enter Number" />
+                <RecipientInput
+                    placeholder="Enter Number"
+                    onChange={handleCellChange}
+                />
             </InputWrapper>
-            <ConfirmButton>Start Chat</ConfirmButton>
+            <ConfirmButton onClick={handleStartChatClick}>
+                Start Chat
+            </ConfirmButton>
         </HeaderContainer>
     );
 };

@@ -15,6 +15,10 @@ import ReminderSetReminder from "../../micro/reminder/ReminderSetReminder";
 import RightSideBar from "../../layout/RightSideBar";
 
 import ReminderMembers from "../../micro/reminder/ReminderMembers";
+import {
+    getRemindersByCustomerId,
+    useGetRemindersByCustomerId,
+} from "../../../database/business/reminderModel";
 
 const CalendarWrapper = styled.div`
     .fc {
@@ -48,18 +52,26 @@ const Body = styled.section`
 
 const Notification = () => {
     const [selectedCustomer, setSelectedCustomer] = useState();
+    const [reminders, setReminders] = useState();
 
     const businessId = "fpVAtpBjJLPUanlCydra";
 
-    console.log("Selected Customer: ", selectedCustomer);
+    const fetchReminders = async (customerId) => {
+        let reminders = await getRemindersByCustomerId(customerId, businessId);
+        setReminders(reminders);
+    };
 
+    console.log("Selected Customer: ", selectedCustomer);
+    console.log("Reminders at RemindersHOme: ", reminders ? reminders : null);
+
+    
     return (
         <Container>
             <MainSection>
                 <Header />
                 <Body>
                     <CalendarWrapper>
-                        <Calendar />
+                        <Calendar events={reminders} />
                     </CalendarWrapper>
                     <ReminderSetReminder selectedCustomer={selectedCustomer} />
                 </Body>
@@ -70,6 +82,7 @@ const Notification = () => {
                 <ReminderMembers
                     businessId={businessId}
                     setSelectedCustomer={setSelectedCustomer}
+                    fetchReminders={fetchReminders}
                 />
             </RightSidebar>
         </Container>

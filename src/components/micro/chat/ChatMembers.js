@@ -11,7 +11,7 @@ import React, { useState } from "react";
 import {
     useGetBusinessCustomers,
     useGetDoc,
-    createChannel,
+    createChannelFromMember,
 } from "../../../database/business/businessModel";
 
 import "../../../styles/components/micro/chat/members.scss";
@@ -33,7 +33,10 @@ function Members({ businessId }) {
                     />
                 ))}
 
-                <div className="Member">
+                <div
+                    className="Member"
+                    style={{ cursor: "pointer", marginTop: "6px" }}
+                >
                     <div className="MemberStatus online" />
                     cleverbot
                 </div>
@@ -49,9 +52,9 @@ const Member = ({ member, businessId }) => {
 
     return (
         <div
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", marginTop: "6px" }}
             onClick={() =>
-                createChannel(
+                createChannelFromMember(
                     businessId,
                     member.customer.id,
                     memberData.cellPhone

@@ -55,7 +55,7 @@ function ChatInputBox({ businessId }) {
                 batch.set(convoDocRef, {
                     user: doc(db, `businesses/${businessId}`),
                     businessTwilioNumber: business.twilioNumber,
-                    customerId: customer.customerId,
+                    customerId: customer ? customer.customerId : null,
                     text: value,
                     direction: "out",
                     createdOn: Timestamp.fromDate(new Date()),
