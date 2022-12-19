@@ -49,7 +49,14 @@ const Member = ({ member, businessId }) => {
 
     return (
         <div
-            onClick={() => createChannel(businessId, member.customer.id)}
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+                createChannel(
+                    businessId,
+                    member.customer.id,
+                    memberData.cellPhone
+                )
+            }
             className="Member"
         >
             <div className="MemberStatus offline" />

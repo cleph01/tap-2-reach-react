@@ -4,7 +4,7 @@ import { collection, addDoc, Timestamp } from "firebase/firestore";
 
 import { db } from "../../../utils/db/firebaseConfig";
 
-import ChatMembers from "../../micro/chat/ChatMembers";
+import BlastMembers from "../../micro/blast/BlastMembers";
 
 import {
     Avatar,
@@ -133,7 +133,7 @@ const BlastHome = () => {
     };
 
     console.log("Select Date: ", date);
-    console.log("Selected Customer: ", selectedCustomer);
+    console.log("Selected Customer at Blast Home: ", selectedCustomer);
 
     return (
         <Container>
@@ -220,7 +220,10 @@ const BlastHome = () => {
                 </Body>
             </MainSection>
             <RightSidebar>
-                <ChatMembers businessId={businessId} />
+                <BlastMembers
+                    businessId={businessId}
+                    setSelectedCustomer={setSelectedCustomer}
+                />
             </RightSidebar>
         </Container>
     );

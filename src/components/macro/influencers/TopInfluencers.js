@@ -39,6 +39,7 @@ const RightSidebar = styled.section`
 const Body = styled.section`
     display: flex;
     flex-direction: column;
+    overflow: scroll;
 `;
 
 const TopInfluencers = () => {
@@ -238,7 +239,7 @@ const Search = ({ setFilteredMembers, filteredMembers, originalMembers }) => {
                     <MenuItem value={"cellNumber"}>Cell Number</MenuItem>
                 </Select>
             </FormControl>
-            <FormControl sx={{ m: 1 }} variant="outlined">
+            <FormControl sx={{ ml: "3px", width: "100%" }} variant="outlined">
                 <InputLabel htmlFor="outlined-adornment-password">
                     Search
                 </InputLabel>

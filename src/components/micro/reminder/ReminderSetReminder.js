@@ -6,7 +6,9 @@ import { Button, ListItem, ListItemText, TextField } from "@mui/material";
 import NotificationDatePicker from "./NotificationDatePicker";
 import TimePicker from "./TimePicker";
 
-function ReminderSideBar() {
+import moment from "moment";
+
+function ReminderSetReminder({ selectedCustomer }) {
     const businessId = "fpVAtpBjJLPUanlCydra";
     const [reminderMessage, setReminderMessage] = useState("");
     const [time, setTime] = useState({ hour: "", minute: "", meridiem: "" });
@@ -68,16 +70,16 @@ function ReminderSideBar() {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                justifyContent: "flex-end",
                 flex: "1",
             }}
         >
             <div style={{ width: "96%" }}>
                 <div>
-                    <NotificationDatePicker
-                        date={date}
-                        setDate={setDate}
-                        // selectedCustomer={selectedCustomer}
-                    />
+                    {selectedCustomer && (
+                        <CustomerListItem selectedCustomer={selectedCustomer} />
+                    )}
+                    <NotificationDatePicker date={date} setDate={setDate} />
                     <TimePicker time={time} setTime={setTime} />
                 </div>
                 <div>
@@ -120,4 +122,31 @@ function ReminderSideBar() {
     );
 }
 
-export default ReminderSideBar;
+const CustomerListItem = ({ selectedCustomer }) => {
+    return (
+        <ListItem
+            sx={{ mt: 3, boxShadow: 3 }}
+            style={{ backgroundColor: "#fafafa" }}
+        >
+            <ListItemText
+                primary={`${selectedCustomer.firstName} ${selectedCustomer.lastName}`}
+                secondary={
+                    <>
+                        <span>{selectedCustomer.cellNumber}</span>
+                        <br />
+                        <span>{selectedCustomer.email}</span>
+                        <br />
+                        <span>
+                            Joined on:{" "}
+                            {moment(selectedCustomer.created).format(
+                                "MM/DD/yyyy h:mm a"
+                            )}
+                        </span>
+                    </>
+                }
+            />
+        </ListItem>
+    );
+};
+
+export default ReminderSetReminder;

@@ -21,12 +21,12 @@ const EndOfMessages = styled.div`
 `;
 
 function Messages({ businessId }) {
-    const { customerId } = useParams();
+    const { cellphone } = useParams();
 
-    console.log("CustomerId at Messages: ", customerId);
+    console.log("Cellphone at Messages: ", cellphone);
 
     const messages = useGetChatMessages(
-        `chats/${businessId}/channels/${customerId}/messages`
+        `chats/${businessId}/channels/${cellphone}/messages`
     );
 
     return (
@@ -37,7 +37,9 @@ function Messages({ businessId }) {
                 const previous = messages[index - 1];
                 const showDay = false;
                 const showAvatar =
-                    !previous || message.user.id !== previous.user.id;
+                    !previous ||
+                    message.customerPhoneNumber !==
+                        previous.customerPhoneNumber;
                 return showAvatar ? (
                     <FirsMessageFromUser key={index} message={message} />
                 ) : (
@@ -87,7 +89,7 @@ const Header = () => {
 };
 
 const FirsMessageFromUser = ({ message, showDay }) => {
-    const author = useGetDoc(message.user.path);
+    const author = useGetDoc(`customers/${message.customerId}`);
 
     console.log(" author: ", author);
     return (

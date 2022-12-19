@@ -56,6 +56,33 @@ const useGetDoc = (path) => {
     return record;
 };
 
+// Get the Customer by Phone Number
+const useGetCustomerByCellphone = (cellphone) => {
+    const [customer, setCustomer] = useState();
+
+    useEffect(() => {
+        const collectionRef = collection(db, "customers");
+
+        let q = query(
+            collectionRef,
+            where("cellPhone", "==", `+1${cellphone}`)
+        );
+
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            querySnapshot.forEach((doc) =>
+                setCustomer({
+                    customerId: doc.id,
+                    ...doc.data(),
+                })
+            );
+        });
+
+        return unsubscribe;
+    }, [cellphone]);
+
+    return customer;
+};
+
 // Get All Chat Messages in that Chat Channel
 // (ie. Messages bw. business and that customer)
 const useGetChatMessages = (path) => {
@@ -120,12 +147,17 @@ const getCustomers = async (customers) => {
 
 // Create Channel When Someone From Member List in Chat Window
 // is Clicked
-const createChannel = async (businessId, customerId) => {
-    console.log("businessId, customerId: ", businessId, customerId);
+const createChannel = async (businessId, customerId, cellPhone) => {
+    console.log(
+        "businessId, customerId, cellPhone: ",
+        businessId,
+        customerId,
+        cellPhone
+    );
 
     try {
         const docRef = await setDoc(
-            doc(db, `chats/${businessId}/channels`, customerId),
+            doc(db, `chats/${businessId}/channels`, cellPhone.slice(2)),
             { customerId: customerId }
         );
 
@@ -230,4 +262,5 @@ export {
     useGetAllGroups,
     useGetCustomerGroups,
     createSmsGroup,
+    useGetCustomerByCellphone,
 };

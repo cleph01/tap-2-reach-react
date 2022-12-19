@@ -38,7 +38,7 @@ const ChannelListItem = ({ channel, handleIdChange, index }) => {
     console.log("Author: ", author);
     return (
         <Link key={index} to={`/business/chat/${channel.id}`}>
-            # {author?.displayName}
+            # {author?.displayName ? author?.displayName : channel.id}
         </Link>
     );
 };

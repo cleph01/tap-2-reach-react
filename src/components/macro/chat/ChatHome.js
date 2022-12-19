@@ -32,7 +32,7 @@ function ChatMain({ businessId }) {
         <Container>
             <MainSection>
                 <Switch>
-                    <Route path="/business/chat/:customerId">
+                    <Route path="/business/chat/:cellphone">
                         <Messages businessId={businessId} />
                         <ChatInputBox businessId={businessId} />
                     </Route>

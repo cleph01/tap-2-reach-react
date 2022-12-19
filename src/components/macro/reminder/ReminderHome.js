@@ -47,7 +47,7 @@ const Body = styled.section`
 `;
 
 const Notification = () => {
-    const [selectedCustomer, setSelectedCustomer] = useState({});
+    const [selectedCustomer, setSelectedCustomer] = useState();
 
     const businessId = "fpVAtpBjJLPUanlCydra";
 
@@ -61,13 +61,16 @@ const Notification = () => {
                     <CalendarWrapper>
                         <Calendar />
                     </CalendarWrapper>
-                    <ReminderSetReminder />
+                    <ReminderSetReminder selectedCustomer={selectedCustomer} />
                 </Body>
 
                 {/* <AutoFillReminders /> */}
             </MainSection>
             <RightSidebar>
-                <ReminderMembers businessId={businessId} />
+                <ReminderMembers
+                    businessId={businessId}
+                    setSelectedCustomer={setSelectedCustomer}
+                />
             </RightSidebar>
         </Container>
     );

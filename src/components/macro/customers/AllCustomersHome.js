@@ -245,7 +245,7 @@ const Search = ({ setFilteredMembers, filteredMembers, originalMembers }) => {
                     <MenuItem value={"cellNumber"}>Cell Number</MenuItem>
                 </Select>
             </FormControl>
-            <FormControl sx={{ width: "100%" }} variant="outlined">
+            <FormControl sx={{ ml: "3px", width: "100%" }} variant="outlined">
                 <InputLabel htmlFor="outlined-adornment-password">
                     Search
                 </InputLabel>

@@ -1,6 +1,9 @@
 import { db } from "../../../utils/db/firebaseConfig";
 import { useParams } from "react-router-dom";
-import { useGetDoc } from "../../../database/business/businessModel";
+import {
+    useGetDoc,
+    useGetCustomerByCellphone,
+} from "../../../database/business/businessModel";
 
 import {
     collection,
@@ -11,8 +14,9 @@ import {
 } from "firebase/firestore";
 
 function ChatInputBox({ businessId }) {
-    const { customerId } = useParams();
-    let customer = useGetDoc(`customers/${customerId}`);
+    const { cellphone } = useParams();
+    console.log("cellphone at chatInputBox: ", cellphone);
+    let customer = useGetCustomerByCellphone(cellphone);
     let business = useGetDoc(`businesses/${businessId}`);
 
     console.log("Customer at ChatInbox: ", customer);
@@ -35,7 +39,7 @@ function ChatInputBox({ businessId }) {
                 console.log("Out Text Ref: ", outTextDocRef);
 
                 batch.set(outTextDocRef, {
-                    to: customer.cellPhone,
+                    to: `+1${cellphone}`,
                     from: business.twilioNumber,
                     body: value,
                 });
@@ -44,14 +48,14 @@ function ChatInputBox({ businessId }) {
                 const convoDocRef = doc(
                     collection(
                         db,
-                        `chats/${businessId}/channels/${customerId}/messages`
+                        `chats/${businessId}/channels/${cellphone}/messages`
                     )
                 );
 
                 batch.set(convoDocRef, {
                     user: doc(db, `businesses/${businessId}`),
                     businessTwilioNumber: business.twilioNumber,
-                    customerId: customerId,
+                    customerId: customer.customerId,
                     text: value,
                     direction: "out",
                     createdOn: Timestamp.fromDate(new Date()),
