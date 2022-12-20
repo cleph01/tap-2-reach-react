@@ -55,7 +55,10 @@ function Members({ businessId, setSelectedCustomer }) {
                     />
                 ))}
 
-                <div className="Member">
+                <div
+                    style={{ cursor: "pointer", marginTop: "6px" }}
+                    className="Member"
+                >
                     <div className="MemberStatus online" />
                     cleverbot
                 </div>
@@ -67,7 +70,7 @@ function Members({ businessId, setSelectedCustomer }) {
 const Member = ({ member, businessId, setSelectedCustomer }) => {
     return (
         <div
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", marginTop: "6px" }}
             onClick={() => setSelectedCustomer(member)}
             className="Member"
         >

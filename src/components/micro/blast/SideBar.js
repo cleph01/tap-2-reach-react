@@ -1,39 +1,15 @@
 import { useState } from "react";
 
 import { Link } from "react-router-dom";
-import {
-    Button,
-    FormControl,
-    FormControlLabel,
-    FormLabel,
-    ListItem,
-    ListItemText,
-    Radio,
-    RadioGroup,
-    TextField,
-} from "@mui/material";
+import { Button, TextField } from "@mui/material";
 
-import { createSmsGroup } from "../../../database/business/businessModel";
+import { createSmsGroup } from "../../../database/business/smsBlastModel";
 
 function SideBar() {
     const [groupName, setGroupName] = useState();
 
     const businessId = "fpVAtpBjJLPUanlCydra";
-    const [reminders, setReminders] = useState([
-        {
-            id: "R6O1CPHACsmjvjWxzaFN",
-            text: "Canned Reminder  ",
-        },
-        {
-            id: "R6O1CPHACsmjvjWxzaFN",
-            text: "Reminder: Lorem Ipsum  ",
-        },
-        {
-            id: "R6O1CPHACsmjvjWxzaFN",
-            text: "Reminder: Lorem Ipsum  ",
-        },
-    ]);
-
+   
     const handleGroupNameChange = (e) => {
         e.preventDefault();
 
@@ -73,45 +49,8 @@ function SideBar() {
                     Create Group
                 </Button>
             </div>
-            <div style={{ padding: "8px", marginTop: "15px" }}>
-                Send SMS to Who:
-                <RadioButtonsGroup />
-            </div>
         </div>
     );
 }
-
-const RadioButtonsGroup = () => {
-    return (
-        <FormControl>
-            <RadioGroup
-                aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue="OneContact"
-                name="radio-buttons-group"
-            >
-                <FormControlLabel
-                    value="OneContact"
-                    control={<Radio />}
-                    label="One Contact"
-                />
-                <FormControlLabel
-                    value="MultipleContacts"
-                    control={<Radio />}
-                    label="Multiple Contacts"
-                />
-                <FormControlLabel
-                    value="SelectGroup"
-                    control={<Radio />}
-                    label="Select Group(s)"
-                />
-                <FormControlLabel
-                    value="Manual"
-                    control={<Radio />}
-                    label="Manual Entry"
-                />
-            </RadioGroup>
-        </FormControl>
-    );
-};
 
 export default SideBar;

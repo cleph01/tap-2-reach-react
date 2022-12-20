@@ -17,6 +17,7 @@ import RightSideBar from "../../layout/RightSideBar";
 import ReminderMembers from "../../micro/reminder/ReminderMembers";
 import {
     getRemindersByCustomerId,
+    useGetAllReminders,
     useGetRemindersByCustomerId,
 } from "../../../database/business/reminderModel";
 
@@ -56,24 +57,31 @@ const Notification = () => {
 
     const businessId = "fpVAtpBjJLPUanlCydra";
 
+    const loadReminders = useGetAllReminders(businessId);
+
     const fetchReminders = async (customerId) => {
         let reminders = await getRemindersByCustomerId(customerId, businessId);
         setReminders(reminders);
     };
 
+    console.log("Load Reminders: ", loadReminders);
     console.log("Selected Customer: ", selectedCustomer);
     console.log("Reminders at RemindersHOme: ", reminders ? reminders : null);
 
-    
     return (
         <Container>
             <MainSection>
                 <Header />
                 <Body>
                     <CalendarWrapper>
-                        <Calendar events={reminders} />
+                        <Calendar
+                            events={reminders ? reminders : loadReminders}
+                        />
                     </CalendarWrapper>
-                    <ReminderSetReminder selectedCustomer={selectedCustomer} />
+                    <ReminderSetReminder
+                        selectedCustomer={selectedCustomer}
+                        reminders={reminders}
+                    />
                 </Body>
 
                 {/* <AutoFillReminders /> */}

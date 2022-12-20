@@ -6,25 +6,24 @@ import { db } from "../../../utils/db/firebaseConfig";
 
 import BlastMembers from "../../micro/blast/BlastMembers";
 
+import GroupListModal from "../../micro/modals/GroupListModal";
+
 import {
     Avatar,
     Button,
     FormControl,
+    FormControlLabel,
     IconButton,
-    InputAdornment,
-    InputBase,
-    InputLabel,
     ListItem,
     ListItemAvatar,
     ListItemText,
-    MenuItem,
-    OutlinedInput,
-    Select,
+    Radio,
+    RadioGroup,
     TextField,
     Typography,
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
-import ReminderMembers from "../../micro/reminder/ReminderMembers";
+
 import {
     useGetAllGroups,
     useGetCustomerGroups,
@@ -64,6 +63,8 @@ const BlastHome = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCustomer, setSelectedCustomer] = useState();
     const [reminderMessage, setReminderMessage] = useState("");
+    const [openModal, setOpenModal] = useState(false);
+    const [groupMembers, setGroupMembers] = useState([]);
 
     const businessId = "fpVAtpBjJLPUanlCydra";
 
@@ -146,10 +147,35 @@ const BlastHome = () => {
                             flexDirection: "column",
                             height: "750px",
                             flex: "1",
+                            margin: "0px 10px",
                         }}
                     >
-                        <h1>Your Groups</h1>
-                        <Groups businessId={businessId} />
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                            }}
+                        >
+                            <h1>Your Groups</h1>
+                            <div
+                                style={{
+                                    border: "1px solid #ccc",
+                                    borderRadius: "5px",
+                                    padding: "10px",
+                                    boxShadow:
+                                        "5px 5px 5px rgba(68, 68, 68, 0.6)",
+                                }}
+                            >
+                                Add New Group
+                            </div>
+                        </div>
+
+                        <Groups
+                            businessId={businessId}
+                            setOpenModal={setOpenModal}
+                            setGroupMembers={setGroupMembers}
+                        />
                     </div>
 
                     {/* {selectedCustomer && (
@@ -182,7 +208,15 @@ const BlastHome = () => {
                                     businessId={businessId}
                                 />
                             )}
-
+                            <div
+                                style={{
+                                    justifyContent: "center",
+                                    padding: "8px",
+                                }}
+                            >
+                                Send SMS to Who:
+                                <RadioButtonsGroup />
+                            </div>
                             <InputRecipients />
                             <TextField
                                 id="outlined-multiline-static"
@@ -225,6 +259,11 @@ const BlastHome = () => {
                     setSelectedCustomer={setSelectedCustomer}
                 />
             </RightSidebar>
+            <GroupListModal
+                openModal={openModal}
+                setOpenModal={setOpenModal}
+                groupMembers={groupMembers}
+            />
         </Container>
     );
 };
@@ -363,7 +402,41 @@ const InputRecipients = () => {
     );
 };
 
-const Groups = ({ businessId }) => {
+const RadioButtonsGroup = () => {
+    return (
+        <FormControl>
+            <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                defaultValue="OneContact"
+                name="radio-buttons-group"
+                sx={{ flexDirection: "row" }}
+            >
+                <FormControlLabel
+                    value="OneContact"
+                    control={<Radio />}
+                    label="One Contact"
+                />
+                <FormControlLabel
+                    value="MultipleContacts"
+                    control={<Radio />}
+                    label="Multiple Contacts"
+                />
+                <FormControlLabel
+                    value="SelectGroup"
+                    control={<Radio />}
+                    label="Select Group(s)"
+                />
+                <FormControlLabel
+                    value="Manual"
+                    control={<Radio />}
+                    label="Manual Entry"
+                />
+            </RadioGroup>
+        </FormControl>
+    );
+};
+
+const Groups = ({ businessId, setOpenModal, setGroupMembers }) => {
     const groups = useGetAllGroups(businessId);
 
     console.log("Groups: ", groups);
@@ -379,14 +452,11 @@ const Groups = ({ businessId }) => {
         >
             {groups?.map((group, index) => (
                 <CategoryBox
-                    groupName={group.groupName}
-                    amount={group.members.length}
+                    setOpenModal={setOpenModal}
+                    group={group}
+                    setGroupMembers={setGroupMembers}
                 />
             ))}
-
-            <CategoryBox groupName="Best Customers" amount="777" />
-
-            <CategoryBox groupName="Ladies" amount="999" />
         </div>
     );
 };
@@ -395,19 +465,20 @@ const SelectedCustomer = ({ selectedCustomer, businessId }) => {
 
     console.log("custoemr group: ", groups);
     return (
-        <div>
-            Selected Customer
+        <>
+            <div>Selected Customer</div>
+
             <ListItem
                 alignItems="flex-start"
                 secondaryAction={
-                    <div>
+                    <>
                         <IconButton aria-label="comment">
                             <Delete />
                         </IconButton>
                         <IconButton aria-label="comment">
                             <Edit />
                         </IconButton>
-                    </div>
+                    </>
                 }
             >
                 <ListItemAvatar>
@@ -419,46 +490,54 @@ const SelectedCustomer = ({ selectedCustomer, businessId }) => {
                 <ListItemText
                     primary={`Display Name: ${selectedCustomer.displayName}`}
                     secondary={
-                        <>
-                            <Typography
-                                sx={{ display: "inline" }}
-                                component="span"
-                                variant="body2"
-                                color="text.primary"
+                        <div style={{ display: "flex" }}>
+                            <div>
+                                <Typography
+                                    sx={{ display: "inline" }}
+                                    component="span"
+                                    variant="body2"
+                                    color="text.primary"
+                                >
+                                    First Name: {selectedCustomer.firstName}
+                                </Typography>
+                                <div>
+                                    <Typography
+                                        sx={{ display: "inline" }}
+                                        component="span"
+                                        variant="body2"
+                                        color="text.primary"
+                                    >
+                                        Last Name: {selectedCustomer.lastName}
+                                    </Typography>
+                                </div>
+                                <div>
+                                    <Typography
+                                        sx={{ display: "inline" }}
+                                        component="span"
+                                        variant="body2"
+                                        color="text.primary"
+                                    >
+                                        Cell Phone: {selectedCustomer.cellPhone}{" "}
+                                    </Typography>
+                                </div>
+                                <div>
+                                    <Typography
+                                        sx={{ display: "inline" }}
+                                        component="span"
+                                        variant="body2"
+                                        color="text.primary"
+                                    >
+                                        Email: {selectedCustomer.email}
+                                    </Typography>
+                                </div>
+                            </div>
+                            <div
+                                style={{
+                                    borderLeft: "1px solid #ccc",
+                                    paddingLeft: "10px",
+                                    marginLeft: "10px",
+                                }}
                             >
-                                First Name: {selectedCustomer.firstName}
-                            </Typography>
-                            <div>
-                                <Typography
-                                    sx={{ display: "inline" }}
-                                    component="span"
-                                    variant="body2"
-                                    color="text.primary"
-                                >
-                                    Last Name: {selectedCustomer.lastName}
-                                </Typography>
-                            </div>
-                            <div>
-                                <Typography
-                                    sx={{ display: "inline" }}
-                                    component="span"
-                                    variant="body2"
-                                    color="text.primary"
-                                >
-                                    Cell Phone: {selectedCustomer.cellPhone}{" "}
-                                </Typography>
-                            </div>
-                            <div>
-                                <Typography
-                                    sx={{ display: "inline" }}
-                                    component="span"
-                                    variant="body2"
-                                    color="text.primary"
-                                >
-                                    Email: {selectedCustomer.email}
-                                </Typography>
-                            </div>
-                            <div>
                                 {groups?.length > 0
                                     ? "Already in following groups:"
                                     : "** Not Part of an SMS Group Yet **"}
@@ -473,17 +552,24 @@ const SelectedCustomer = ({ selectedCustomer, businessId }) => {
                                     </Typography>
                                 ))}
                             </div>
-                        </>
+                        </div>
                     }
                 />
             </ListItem>
-        </div>
+        </>
     );
 };
 
-const CategoryBox = ({ groupName, amount }) => {
+const CategoryBox = ({ group, setOpenModal, setGroupMembers }) => {
     return (
         <div
+            onClick={() => {
+                setGroupMembers({
+                    groupName: group.groupName,
+                    members: group.members,
+                });
+                setOpenModal(true);
+            }}
             style={{
                 display: "flex",
                 justifyContent: "center",
@@ -505,8 +591,8 @@ const CategoryBox = ({ groupName, amount }) => {
                     boxShadow: "5px 5px 5px rgba(68, 68, 68, 0.6)",
                 }}
             >
-                <div>{groupName}</div>
-                <div>({amount})</div>
+                <div>{group?.groupName}</div>
+                <div>({group?.members.length})</div>
             </div>
         </div>
     );

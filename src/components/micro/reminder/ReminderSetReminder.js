@@ -1,14 +1,21 @@
 import { useState } from "react";
 
 import { Link } from "react-router-dom";
-import { Button, ListItem, ListItemText, TextField } from "@mui/material";
+import {
+    Avatar,
+    Button,
+    ListItem,
+    ListItemAvatar,
+    ListItemText,
+    TextField,
+} from "@mui/material";
 
 import NotificationDatePicker from "./NotificationDatePicker";
 import TimePicker from "./TimePicker";
 
 import moment from "moment";
 
-function ReminderSetReminder({ selectedCustomer }) {
+function ReminderSetReminder({ selectedCustomer, reminders }) {
     const businessId = "fpVAtpBjJLPUanlCydra";
     const [reminderMessage, setReminderMessage] = useState("");
     const [time, setTime] = useState({ hour: "", minute: "", meridiem: "" });
@@ -77,7 +84,10 @@ function ReminderSetReminder({ selectedCustomer }) {
             <div style={{ width: "96%" }}>
                 <div>
                     {selectedCustomer && (
-                        <CustomerListItem selectedCustomer={selectedCustomer} />
+                        <SelectedCustomer
+                            selectedCustomer={selectedCustomer}
+                            reminders={reminders}
+                        />
                     )}
                     <NotificationDatePicker date={date} setDate={setDate} />
                     <TimePicker time={time} setTime={setTime} />
@@ -121,6 +131,86 @@ function ReminderSetReminder({ selectedCustomer }) {
         </div>
     );
 }
+
+const SelectedCustomer = ({ selectedCustomer, reminders }) => {
+    return (
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                border: "1px solid #454545",
+                borderRadius: "3px",
+                margin: "10px",
+                padding: "10px",
+            }}
+        >
+            <div style={{ display: "flex", width: "50%" }}>
+                <ListItemAvatar>
+                    <Avatar
+                        alt={`Charlie}`}
+                        src={`https://placekitten.com/64/64`}
+                    />
+                </ListItemAvatar>
+                <div style={{ fontWeight: "bold" }}>
+                    {selectedCustomer.displayName}
+                </div>
+                <div style={{ display: "flex", marginLeft: "10px" }}>
+                    <div
+                        style={{
+                            backgroundColor: "transparent",
+                            color: "#ffd700",
+                        }}
+                    >
+                        &#9733;
+                    </div>
+                    <div
+                        style={{
+                            backgroundColor: "transparent",
+                            color: "#ffd700",
+                        }}
+                    >
+                        &#9733;
+                    </div>
+                    <div
+                        style={{
+                            backgroundColor: "transparent",
+                            color: "#ffd700",
+                        }}
+                    >
+                        &#9733;
+                    </div>
+                    <div
+                        style={{
+                            backgroundColor: "transparent",
+                            color: "#ffd700",
+                        }}
+                    >
+                        &#9733;
+                    </div>
+                    <div
+                        style={{
+                            backgroundColor: "transparent",
+                            color: "#ccc",
+                        }}
+                    >
+                        &#9733;
+                    </div>
+                </div>
+            </div>
+            <div style={{ marginTop: "6px" }}>Reminders as of Today:</div>
+            <div style={{ display: "flex" }}>
+                <ul>
+                    {reminders?.map((reminder) => (
+                        <li>
+                            {reminder.message} - to be sent:{" "}
+                            {reminder.sendOnDate} @ {reminder.sendOnTime}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </div>
+    );
+};
 
 const CustomerListItem = ({ selectedCustomer }) => {
     return (
