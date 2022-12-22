@@ -6,7 +6,7 @@ import { db } from "../../../utils/db/firebaseConfig";
 
 import BlastMembers from "../../micro/blast/BlastMembers";
 
-import GroupListModal from "../../micro/modals/GroupListModal";
+import GroupListModal from "../../micro/blast/modals/GroupListModal";
 
 import {
     Avatar,

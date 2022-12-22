@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link, Route, Switch, useParams } from "react-router-dom";
 import {
     Avatar,
     FormControl,
@@ -12,6 +13,11 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import styled from "styled-components";
+import { useGetCustomerById } from "../../../database/business/customerModel";
+import {
+    getCustomers,
+    useGetBusinessCustomers,
+} from "../../../database/business/businessModel";
 
 const Container = styled.div`
     display: flex;
@@ -42,47 +48,113 @@ const Body = styled.section`
     overflow: scroll;
 `;
 
-const AllCustomersHome = () => {
+const AllCustomersHome = ({ businessId }) => {
+    const [members, setMembers] = useState();
+
+    const memberIds = useGetBusinessCustomers(businessId);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const customers = await getCustomers(memberIds);
+            setMembers(customers);
+        };
+
+        fetchData().catch((error) =>
+            console.log("Error at AllCustomersHome: ", error)
+        );
+    }, [memberIds]);
     return (
         <Container>
             <MainSection>
-                <Header />
                 <Body>
-                    <Review />
-                    <Review />
-                    <Review />
-                    <Review />
+                    <Header />
+                    {members?.map((member) => (
+                        <Customer member={member} />
+                    ))}
                 </Body>
-
-                {/* <AutoFillReminders /> */}
             </MainSection>
             <RightSidebar>
-                <h3>Selected Customer</h3>
-                <Avatar
-                    alt={`Charlie}`}
-                    src={`https://placekitten.com/64/64`}
-                    sx={{ width: 76, height: 76 }}
-                />
-                <h4>Display Name: Charlie Montoya</h4>
-                <div style={{ display: "flex" }}>
-                    <div style={{ display: "flex", flexDirection: "column" }}>
-                        <div style={{ margin: "10px 0px" }}>
-                            First Name: John
+                <Switch>
+                    <Route path="/business/customers/:customerId">
+                        <div
+                            style={{
+                                width: "100%",
+                                display: "grid",
+                                placeItems: "center",
+                            }}
+                        >
+                            <CustomerWindow members={members} />
                         </div>
-                        <div style={{ margin: "10px 0px" }}>Last Name: Doe</div>
-                        <div style={{ margin: "10px 0px" }}>
-                            cellNumber: 555.555.5555
+                    </Route>
+                    <Route path="/business/customers">
+                        <div
+                            style={{
+                                width: "100%",
+                                display: "grid",
+                                placeItems: "center",
+                            }}
+                        >
+                            <h3>Selected Customer</h3>
+                            <Avatar
+                                alt="Charlie"
+                                src="https://placekitten.com/64/64"
+                                sx={{ width: 76, height: 76 }}
+                            />
+                            <h4>Display Name: Charlie Montoya</h4>
+                            <div style={{ display: "flex" }}>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            margin: "10px 0px",
+                                        }}
+                                    >
+                                        First Name: John
+                                    </div>
+                                    <div
+                                        style={{
+                                            margin: "10px 0px",
+                                        }}
+                                    >
+                                        Last Name: Doe
+                                    </div>
+                                    <div
+                                        style={{
+                                            margin: "10px 0px",
+                                        }}
+                                    >
+                                        cellNumber: 555.555.5555
+                                    </div>
+                                    <div
+                                        style={{
+                                            margin: "10px 0px",
+                                        }}
+                                    >
+                                        email: email@email.com
+                                    </div>
+                                </div>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            margin: "10px 0px",
+                                        }}
+                                    >
+                                        Current Groups:
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div style={{ margin: "10px 0px" }}>
-                            email: email@email.com
-                        </div>
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column" }}>
-                        <div style={{ margin: "10px 0px" }}>
-                            Current Groups:
-                        </div>
-                    </div>
-                </div>
+                    </Route>
+                </Switch>
             </RightSidebar>
         </Container>
     );
@@ -107,7 +179,72 @@ const Header = () => {
     );
 };
 
-const Review = () => {
+const CustomerWindow = ({ members }) => {
+    const { customerId } = useParams();
+
+    // const customer = useGetCustomerById(customerId);
+
+    const [customer, setCustomer] = useState();
+
+    useEffect(() => {
+        setCustomer(members?.find((el) => el.id === customerId));
+    }, [customerId, members]);
+
+    console.log("Member at customer window: ", members);
+    console.log("Customer at Customer HOme Customer: ", customer);
+    return (
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+                padding: "16px",
+            }}
+        >
+            <h3>Selected Customer</h3>
+            <Avatar
+                alt="Charlie"
+                src="https://placekitten.com/64/64"
+                sx={{ width: 76, height: 76 }}
+            />
+            <h4>Display Name: {customer?.displayName}</h4>
+            <div style={{ display: "flex" }}>
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                    }}
+                >
+                    <div style={{ margin: "10px 0px" }}>
+                        First Name: {customer?.firstName}
+                    </div>
+                    <div style={{ margin: "10px 0px" }}>
+                        Last Name: {customer?.lastName}
+                    </div>
+                    <div style={{ margin: "10px 0px" }}>
+                        cellNumber: {customer?.cellPhone}
+                    </div>
+                    <div style={{ margin: "10px 0px" }}>
+                        email: {customer?.email}
+                    </div>
+                </div>
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                    }}
+                >
+                    <div style={{ margin: "10px 0px" }}>Current Groups:</div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const Customer = ({ member }) => {
     return (
         <div
             style={{
@@ -119,77 +256,88 @@ const Review = () => {
                 padding: "10px",
             }}
         >
-            <div style={{ display: "flex", width: "50%" }}>
-                <ListItemAvatar>
-                    <Avatar
-                        alt={`Charlie}`}
-                        src={`https://placekitten.com/64/64`}
-                    />
-                </ListItemAvatar>
-                <div style={{ fontWeight: "bold" }}>display name</div>
-                <div style={{ display: "flex", marginLeft: "10px" }}>
-                    <div
-                        style={{
-                            backgroundColor: "transparent",
-                            color: "#ffd700",
-                        }}
-                    >
-                        &#9733;
+            <Link
+                to={`/business/customers/${member.id}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+            >
+                <div style={{ display: "flex", width: "50%" }}>
+                    <ListItemAvatar>
+                        <Avatar
+                            alt="Charlie"
+                            src="https://placekitten.com/64/64"
+                        />
+                    </ListItemAvatar>
+                    <div style={{ fontWeight: "bold" }}>
+                        {member.displayName}
                     </div>
-                    <div
-                        style={{
-                            backgroundColor: "transparent",
-                            color: "#ffd700",
-                        }}
-                    >
-                        &#9733;
-                    </div>
-                    <div
-                        style={{
-                            backgroundColor: "transparent",
-                            color: "#ffd700",
-                        }}
-                    >
-                        &#9733;
-                    </div>
-                    <div
-                        style={{
-                            backgroundColor: "transparent",
-                            color: "#ffd700",
-                        }}
-                    >
-                        &#9733;
-                    </div>
-                    <div
-                        style={{
-                            backgroundColor: "transparent",
-                            color: "#ccc",
-                        }}
-                    >
-                        &#9733;
-                    </div>
-                </div>
-            </div>
-            <div style={{ display: "flex", marginTop: "10px" }}>
-                <div
-                    style={{
-                        display: "flex",
-                        flexDirection: "column",
-                    }}
-                >
-                    <div style={{ margin: "10px 0px" }}>First Name: John</div>
-                    <div style={{ margin: "10px 0px" }}>Last Name: Doe</div>
-                    <div style={{ margin: "10px 0px" }}>
-                        cellNumber: 555.555.5555
-                    </div>
-                    <div style={{ margin: "10px 0px" }}>
-                        email: email@email.com
+                    <div style={{ display: "flex", marginLeft: "10px" }}>
+                        <div
+                            style={{
+                                backgroundColor: "transparent",
+                                color: "#ffd700",
+                            }}
+                        >
+                            &#9733;
+                        </div>
+                        <div
+                            style={{
+                                backgroundColor: "transparent",
+                                color: "#ffd700",
+                            }}
+                        >
+                            &#9733;
+                        </div>
+                        <div
+                            style={{
+                                backgroundColor: "transparent",
+                                color: "#ffd700",
+                            }}
+                        >
+                            &#9733;
+                        </div>
+                        <div
+                            style={{
+                                backgroundColor: "transparent",
+                                color: "#ffd700",
+                            }}
+                        >
+                            &#9733;
+                        </div>
+                        <div
+                            style={{
+                                backgroundColor: "transparent",
+                                color: "#ccc",
+                            }}
+                        >
+                            &#9733;
+                        </div>
                     </div>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                    <div>Current Groups:</div>
+                <div style={{ display: "flex", marginTop: "10px" }}>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                        }}
+                    >
+                        <div style={{ margin: "10px 0px" }}>
+                            First Name: {member.firstName}
+                        </div>
+                        <div style={{ margin: "10px 0px" }}>
+                            Last Name: {member.lastName}
+                        </div>
+                        <div style={{ margin: "10px 0px" }}>
+                            cellNumber: {member.cellPhone}
+                        </div>
+                        <div style={{ margin: "10px 0px" }}>
+                            email: member.email
+                        </div>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                        <div>Current Groups:</div>
+                    </div>
                 </div>
-            </div>
+            </Link>
         </div>
     );
 };

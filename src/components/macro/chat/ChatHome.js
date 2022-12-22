@@ -1,6 +1,6 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-import Header from "../../layout/Header";
+
 import Messages from "../../micro/chat/Messages";
 import ChatInputBox from "../../micro/chat/ChatInputBox";
 import ChatMembers from "../../micro/chat/ChatMembers";

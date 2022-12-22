@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch, useParams } from "react-router-dom";
+import { Route } from "react-router-dom";
 
 import ReminderHome from "../macro/reminder/ReminderHome";
 import BlastHome from "../macro/blast/BlastHome";
@@ -23,14 +23,14 @@ function Main({ businessId }) {
             <Route path="/business/reminder">
                 <ReminderHome />
             </Route>
-            <Route exact path="/business/sms">
+            <Route path="/business/sms">
                 <BlastHome />
             </Route>
-            <Route exact path="/business/customers">
-                <AllCustomersHome />
+            <Route path="/business/customers">
+                <AllCustomersHome businessId={businessId} />
             </Route>
-            <Route exact path="/business/influencers">
-                <TopInfluencers />
+            <Route path="/business/influencers">
+                <TopInfluencers businessId={businessId} />
             </Route>
             <Route path="/business/chat">
                 <ChatHome businessId={businessId} />
