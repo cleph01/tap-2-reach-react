@@ -1,8 +1,8 @@
 import React from "react";
 
-import LeftSideBar from "./components/layout/LeftSideBar";
+import LeftSideBar from "./business/components/layout/LeftSideBar";
 
-import Main from "./components/layout/Main";
+import Main from "./business/components/layout/Main";
 
 function App() {
     const businessId = "fpVAtpBjJLPUanlCydra";
