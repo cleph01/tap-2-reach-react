@@ -2,9 +2,15 @@ import { useHistory } from "react-router-dom";
 import { PhonelinkLockOutlined } from "@mui/icons-material";
 import {
     Avatar,
+    Box,
     CardHeader,
+    FormControl,
     IconButton,
+    InputLabel,
     ListItemAvatar,
+    MenuItem,
+    Select,
+    Slider,
     TextField,
 } from "@mui/material";
 import { useState } from "react";
@@ -14,6 +20,9 @@ import image1 from "../../../assets/IMG_4330.jpg";
 import styled from "styled-components";
 
 import { HexColorPicker } from "react-colorful";
+import { Stack } from "@mui/system";
+
+import EmojiPicker from "emoji-picker-react";
 
 const Container = styled.div`
     display: flex;
@@ -55,6 +64,26 @@ const AddPromotion = () => {
         });
     };
 
+    const [scratchPadText, setScratchPadText] = useState();
+
+    const handleScratchPadOnChange = (e) => {
+        setScratchPadText(e.target.value);
+    };
+
+    const handleSetHeaderText = () => {
+        setPromotion({
+            header: scratchPadText,
+            ...promotion,
+        });
+    };
+
+    const handleSetBodyText = () => {
+        setPromotion({
+            body: scratchPadText,
+            ...promotion,
+        });
+    };
+
     const handleHeaderOnKeyPressEnter = (e) => {
         if (e.keyCode === 13 || e.which === 13) {
             let newText = promotion.header + "\n";
@@ -77,21 +106,11 @@ const AddPromotion = () => {
         }
     };
 
-    const handleFooterOnKeyPressEnter = (e) => {
-        if (e.keyCode === 13 || e.which === 13) {
-            let newText = promotion.footer + "\n";
-
-            setPromotion({
-                ...promotion,
-                footer: newText,
-            });
-        }
-    };
     console.log("Body Text: ", promotion.body);
-    const [headerFontSize, setHeaderFontSize] = useState();
+    const [headerFontSize, setHeaderFontSize] = useState("36px");
     const [headerFontFamily, setHeaderFontFamily] = useState();
 
-    const [bodyFontSize, setBodyFontSize] = useState();
+    const [bodyFontSize, setBodyFontSize] = useState("12px");
     const [bodyFontFamily, setBodyFontFamily] = useState();
 
     const [footerFontSize, setFooterFontSize] = useState();
@@ -104,6 +123,37 @@ const AddPromotion = () => {
     const businessId = "fpVAtpBjJLPUanlCydra";
 
     const history = useHistory();
+
+    const handleChangeHeaderFontSize = (e, newValue) => {
+        setHeaderFontSize(`${newValue}px`);
+    };
+
+    const handleChangeBodyFontSize = (e, newValue) => {
+        setBodyFontSize(`${newValue}px`);
+    };
+
+    const [headerFont, setHeaderFont] = useState("Arial");
+    const [bodyFont, setBodyFont] = useState("Arial");
+    const [footerFont, setFooterFont] = useState("Arial");
+
+    const handleHeaderFontChange = (e) => {
+        setHeaderFont(e.target.value);
+    };
+    const handleBodyFontChange = (e) => {
+        setHeaderFont(e.target.value);
+    };
+
+    let fonts = [
+        "Arial",
+        "Verdana",
+        "Tahoma",
+        "Trebuchet MS",
+        "Times New Roman",
+        "Georgia",
+        "Garamond",
+        "Courier New",
+        "Brush Script MT",
+    ];
 
     return (
         <Container>
@@ -217,10 +267,11 @@ const AddPromotion = () => {
                         <div
                             style={{
                                 textAlign: "center",
-                                fontSize: "36px",
+                                fontSize: `${headerFontSize}`,
                                 fontWeight: "bold",
                                 margin: "10px 0",
                                 whiteSpace: "pre-line",
+                                fontFamily: `${headerFont}`,
                             }}
                         >
                             {promotion.header}
@@ -228,85 +279,191 @@ const AddPromotion = () => {
                         <div
                             style={{
                                 textAlign: "center",
+                                fontSize: `${bodyFontSize}`,
                                 flexGrow: "1",
                                 whiteSpace: "pre-line",
                                 maxWidth: "inherit",
+                                fontFamily: `${bodyFont}`,
                             }}
                         >
                             {promotion.body}
                         </div>
-                        <div
-                            style={{
-                                textAlign: "center",
-                                margin: "10px 0",
-                                flex: "0",
-                                whiteSpace: "pre-line",
-                            }}
-                        >
-                            {promotion.footer}
-                        </div>
-                    </div>
-                    <Hr />
-                    <div style={{ marginBottom: "10px" }}>
-                        Description: 50% Off All Bichos
                     </div>
                 </div>
-                <div style={{ height: "100%" }}>
-                    Update Form
-                    <div style={{ display: "flex" }}>
-                        <div>
+                <div
+                    style={{
+                        height: "100%",
+                        marginTop: "10px",
+                        display: "flex",
+                        flexDirection: "column",
+                    }}
+                >
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <div style={{ padding: "0px 3px" }}>
+                            <div>Background Color</div>
                             <HexColorPicker
                                 color={backgroundColor}
                                 onChange={setBackgroundColor}
                             />
                         </div>
-                        <div>
+                        <div style={{ padding: "0px 3px" }}>
+                            <div>Text Color</div>
                             <HexColorPicker
                                 color={textColor}
                                 onChange={setTextColor}
                             />
-                            ;
                         </div>
                     </div>
-                    <div>
+                    <Box
+                        sx={{
+                            marginTop: "15px",
+                            minWidth: 165,
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            padding: "0px 50px",
+                        }}
+                    >
+                        <FormControl sx={{ width: "100px" }}>
+                            <InputLabel id="hour-label">Font Type</InputLabel>
+                            <Select
+                                labelId="hour-label"
+                                id="demo-simple-select"
+                                name="Font Type"
+                                label="Font Type"
+                                onChange={handleHeaderFontChange}
+                                value={headerFont}
+                            >
+                                {fonts.map((font) => (
+                                    <MenuItem value={font}>{font}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <Box sx={{ width: 200 }}>
+                            <Stack
+                                spacing={2}
+                                direction="row"
+                                sx={{ mb: 1 }}
+                                alignItems="center"
+                            >
+                                <Slider
+                                    aria-label="Volume"
+                                    defaultValue={36}
+                                    value={Number(headerFontSize.split("p")[0])}
+                                    onChange={handleChangeHeaderFontSize}
+                                    min={12}
+                                    max={40}
+                                />
+                            </Stack>
+                        </Box>
+                    </Box>
+
+                    <Box
+                        sx={{
+                            marginTop: "15px",
+                            minWidth: 165,
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            padding: "0px 50px",
+                        }}
+                    >
+                        <FormControl sx={{ width: "100px" }}>
+                            <InputLabel id="hour-label">Font Type</InputLabel>
+                            <Select
+                                labelId="hour-label"
+                                id="demo-simple-select"
+                                name="Font Type"
+                                label="Font Type"
+                                onChange={handleBodyFontChange}
+                                value={bodyFont}
+                            >
+                                {fonts.map((font) => (
+                                    <MenuItem value={font}>{font}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <Box sx={{ width: 200 }}>
+                            <Stack
+                                spacing={2}
+                                direction="row"
+                                sx={{ mb: 1 }}
+                                alignItems="center"
+                            >
+                                <Slider
+                                    aria-label="Volume"
+                                    defaultValue={12}
+                                    value={Number(bodyFontSize.split("p")[0])}
+                                    onChange={handleChangeBodyFontSize}
+                                    min={12}
+                                    max={30}
+                                />
+                            </Stack>
+                        </Box>
+                    </Box>
+                    <div
+                        style={{
+                            width: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            margin: "10px 0px",
+                        }}
+                    >
                         <TextField
-                            onKeyDown={handleHeaderOnKeyPressEnter}
-                            onChange={handleOnChange}
-                            value={promotion.header}
-                            id="outlined-basic"
-                            label="Header"
-                            variant="outlined"
-                            name="header"
-                            multiline
-                        />
-                    </div>
-                    <div style={{ flexGrow: "1" }}>
-                        <TextField
+                            sx={{ width: "75%" }}
                             onKeyDown={handleBodyOnKeyPressEnter}
-                            onChange={handleOnChange}
-                            value={promotion.body}
+                            onChange={handleScratchPadOnChange}
+                            value={scratchPadText}
                             id="outlined-basic"
                             label="Body"
                             variant="outlined"
                             multiline
-                            maxRows={6}
+                            rows={6}
                             name="body"
                         />
+                        <div
+                            onClick={handleSetHeaderText}
+                            style={{
+                                border: "1px solid #ccc",
+                                borderRadius: "5px",
+                                padding: "10px",
+                                boxShadow: "5px 5px 5px rgba(68, 68, 68, 0.6)",
+                            }}
+                        >
+                            Set Header Text
+                        </div>
+                        <div
+                            onClick={handleSetBodyText}
+                            style={{
+                                border: "1px solid #ccc",
+                                borderRadius: "5px",
+                                padding: "10px",
+                                boxShadow: "5px 5px 5px rgba(68, 68, 68, 0.6)",
+                            }}
+                        >
+                            Set Body Text
+                        </div>
                     </div>
-                    <div></div>
-                    <div>
-                        <TextField
-                            onKeyDown={handleFooterOnKeyPressEnter}
-                            onChange={handleOnChange}
-                            value={promotion.footer}
-                            id="outlined-basic"
-                            label="Footer"
-                            variant="outlined"
-                            name="footer"
-                            multiline
-                        />
-                    </div>
+
+                    <div
+                        style={{
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            margin: "10px 0px",
+                        }}
+                    ></div>
                 </div>
+                <EmojiPicker />
             </Body>
         </Container>
     );
