@@ -72,15 +72,15 @@ const AddPromotion = () => {
 
     const handleSetHeaderText = () => {
         setPromotion({
-            header: scratchPadText,
             ...promotion,
+            header: scratchPadText,
         });
     };
 
     const handleSetBodyText = () => {
         setPromotion({
-            body: scratchPadText,
             ...promotion,
+            body: scratchPadText,
         });
     };
 
@@ -106,7 +106,6 @@ const AddPromotion = () => {
         }
     };
 
-    console.log("Body Text: ", promotion.body);
     const [headerFontSize, setHeaderFontSize] = useState("36px");
     const [headerFontFamily, setHeaderFontFamily] = useState();
 
@@ -140,7 +139,7 @@ const AddPromotion = () => {
         setHeaderFont(e.target.value);
     };
     const handleBodyFontChange = (e) => {
-        setHeaderFont(e.target.value);
+        setBodyFont(e.target.value);
     };
 
     let fonts = [
@@ -154,6 +153,28 @@ const AddPromotion = () => {
         "Courier New",
         "Brush Script MT",
     ];
+
+    const onEmojiClick = (emojiData) => {
+        let selectedEmoji = emojiData.emoji;
+
+        let currCaretPosition =
+            document.getElementById("scratchpad").selectionStart;
+
+        let fullValueTextArea = scratchPadText;
+
+        let newText =
+            fullValueTextArea.slice(0, currCaretPosition) +
+            " " +
+            selectedEmoji +
+            " " +
+            fullValueTextArea.slice(currCaretPosition);
+
+        setScratchPadText(newText);
+    };
+
+    console.log("ScratchPad: ", scratchPadText);
+    console.log("Header Text: ", promotion.header);
+    console.log("Body Text: ", promotion.body);
 
     return (
         <Container>
@@ -319,6 +340,15 @@ const AddPromotion = () => {
                             />
                         </div>
                     </div>
+                    <div
+                        style={{
+                            width: "100%",
+                            textAlign: "center",
+                            margin: "15px",
+                        }}
+                    >
+                        Header Font
+                    </div>
                     <Box
                         sx={{
                             marginTop: "15px",
@@ -363,7 +393,15 @@ const AddPromotion = () => {
                             </Stack>
                         </Box>
                     </Box>
-
+                    <div
+                        style={{
+                            width: "100%",
+                            textAlign: "center",
+                            margin: "15px",
+                        }}
+                    >
+                        Body Font
+                    </div>
                     <Box
                         sx={{
                             marginTop: "15px",
@@ -411,6 +449,15 @@ const AddPromotion = () => {
                     <div
                         style={{
                             width: "100%",
+                            textAlign: "center",
+                            margin: "15px",
+                        }}
+                    >
+                        Scratch `Pad
+                    </div>
+                    <div
+                        style={{
+                            width: "100%",
                             display: "flex",
                             flexDirection: "column",
                             justifyContent: "center",
@@ -423,7 +470,7 @@ const AddPromotion = () => {
                             onKeyDown={handleBodyOnKeyPressEnter}
                             onChange={handleScratchPadOnChange}
                             value={scratchPadText}
-                            id="outlined-basic"
+                            id="scratchpad"
                             label="Body"
                             variant="outlined"
                             multiline
@@ -431,26 +478,33 @@ const AddPromotion = () => {
                             name="body"
                         />
                         <div
-                            onClick={handleSetHeaderText}
                             style={{
-                                border: "1px solid #ccc",
-                                borderRadius: "5px",
-                                padding: "10px",
-                                boxShadow: "5px 5px 5px rgba(68, 68, 68, 0.6)",
+                                width: "65%",
+                                margin: "10px 10px",
+                                display: "flex",
+                                justifyContent: "space-between",
                             }}
                         >
-                            Set Header Text
-                        </div>
-                        <div
-                            onClick={handleSetBodyText}
-                            style={{
-                                border: "1px solid #ccc",
-                                borderRadius: "5px",
-                                padding: "10px",
-                                boxShadow: "5px 5px 5px rgba(68, 68, 68, 0.6)",
-                            }}
-                        >
-                            Set Body Text
+                            <div
+                                onClick={handleSetHeaderText}
+                                style={{
+                                    border: "1px solid #ccc",
+                                    borderRadius: "5px",
+                                    padding: "10px",
+                                }}
+                            >
+                                Set Header Text
+                            </div>
+                            <div
+                                onClick={handleSetBodyText}
+                                style={{
+                                    border: "1px solid #ccc",
+                                    borderRadius: "5px",
+                                    padding: "10px",
+                                }}
+                            >
+                                Set Body Text
+                            </div>
                         </div>
                     </div>
 
@@ -463,7 +517,7 @@ const AddPromotion = () => {
                         }}
                     ></div>
                 </div>
-                <EmojiPicker />
+                <EmojiPicker onEmojiClick={onEmojiClick} />
             </Body>
         </Container>
     );

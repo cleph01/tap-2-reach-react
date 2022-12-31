@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Route, Switch, useParams } from "react-router-dom";
+import { Link, Route, Switch, useParams, useHistory } from "react-router-dom";
 import {
     Avatar,
     FormControl,
@@ -18,6 +18,8 @@ import {
     getCustomers,
     useGetBusinessCustomers,
 } from "../../../../database/business/businessModel";
+
+import AddCustomer from "../../micro/customers/AddCustomer";
 
 const Container = styled.div`
     display: flex;
@@ -65,97 +67,104 @@ const AllCustomersHome = ({ businessId }) => {
     }, [memberIds]);
     return (
         <Container>
-            <MainSection>
-                <Body>
-                    <Header />
-                    {members?.map((member) => (
-                        <Customer member={member} />
-                    ))}
-                </Body>
-            </MainSection>
-            <RightSidebar>
-                <Switch>
-                    <Route path="/business/customers/:customerId">
-                        <div
-                            style={{
-                                width: "100%",
-                                display: "grid",
-                                placeItems: "center",
-                            }}
-                        >
-                            <CustomerWindow members={members} />
-                        </div>
-                    </Route>
-                    <Route path="/business/customers">
-                        <div
-                            style={{
-                                width: "100%",
-                                display: "grid",
-                                placeItems: "center",
-                            }}
-                        >
-                            <h3>Selected Customer</h3>
-                            <Avatar
-                                alt="Charlie"
-                                src="https://placekitten.com/64/64"
-                                sx={{ width: 76, height: 76 }}
-                            />
-                            <h4>Display Name: Charlie Montoya</h4>
-                            <div style={{ display: "flex" }}>
+            <Switch>
+                <Route path="/business/customers/add">
+                    <AddCustomer />
+                </Route>
+                <Route path="/business/customers">
+                    <MainSection>
+                        <Body>
+                            <Header />
+                            {members?.map((member) => (
+                                <Customer member={member} />
+                            ))}
+                        </Body>
+                    </MainSection>
+                    <RightSidebar>
+                        <Switch>
+                            <Route path="/business/customers/:customerId">
                                 <div
                                     style={{
-                                        display: "flex",
-                                        flexDirection: "column",
+                                        width: "100%",
+                                        display: "grid",
+                                        placeItems: "center",
                                     }}
                                 >
-                                    <div
-                                        style={{
-                                            margin: "10px 0px",
-                                        }}
-                                    >
-                                        First Name: John
-                                    </div>
-                                    <div
-                                        style={{
-                                            margin: "10px 0px",
-                                        }}
-                                    >
-                                        Last Name: Doe
-                                    </div>
-                                    <div
-                                        style={{
-                                            margin: "10px 0px",
-                                        }}
-                                    >
-                                        cellNumber: 555.555.5555
-                                    </div>
-                                    <div
-                                        style={{
-                                            margin: "10px 0px",
-                                        }}
-                                    >
-                                        email: email@email.com
-                                    </div>
+                                    <CustomerWindow members={members} />
                                 </div>
+                            </Route>
+                            <Route path="/business/customers">
                                 <div
                                     style={{
-                                        display: "flex",
-                                        flexDirection: "column",
+                                        width: "100%",
+                                        display: "grid",
+                                        placeItems: "center",
                                     }}
                                 >
-                                    <div
-                                        style={{
-                                            margin: "10px 0px",
-                                        }}
-                                    >
-                                        Current Groups:
+                                    <h3>Selected Customer</h3>
+                                    <Avatar
+                                        alt="Charlie"
+                                        src="https://placekitten.com/64/64"
+                                        sx={{ width: 76, height: 76 }}
+                                    />
+                                    <h4>Display Name: Charlie Montoya</h4>
+                                    <div style={{ display: "flex" }}>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                flexDirection: "column",
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    margin: "10px 0px",
+                                                }}
+                                            >
+                                                First Name: John
+                                            </div>
+                                            <div
+                                                style={{
+                                                    margin: "10px 0px",
+                                                }}
+                                            >
+                                                Last Name: Doe
+                                            </div>
+                                            <div
+                                                style={{
+                                                    margin: "10px 0px",
+                                                }}
+                                            >
+                                                cellNumber: 555.555.5555
+                                            </div>
+                                            <div
+                                                style={{
+                                                    margin: "10px 0px",
+                                                }}
+                                            >
+                                                email: email@email.com
+                                            </div>
+                                        </div>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                flexDirection: "column",
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    margin: "10px 0px",
+                                                }}
+                                            >
+                                                Current Groups:
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </Route>
-                </Switch>
-            </RightSidebar>
+                            </Route>
+                        </Switch>
+                    </RightSidebar>
+                </Route>
+            </Switch>
         </Container>
     );
 };
@@ -171,10 +180,17 @@ const HeaderContainer = styled.div`
 `;
 
 const Header = () => {
+    const history = useHistory();
+
     return (
         <HeaderContainer>
             <Search />
-            <div>Add Customer</div>
+            <div
+                style={{ cursor: "pointer" }}
+                onClick={() => history.push("/business/customers/add")}
+            >
+                Add Customer
+            </div>
         </HeaderContainer>
     );
 };
