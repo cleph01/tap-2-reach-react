@@ -208,6 +208,7 @@ const HeaderContainer = styled.div`
     padding: 10px 20px;
     font-weight: bold;
     border-bottom: solid 1px #ccc;
+    cursor: pointer;
 `;
 
 const All = styled.div`

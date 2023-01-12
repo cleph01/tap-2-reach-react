@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { BusinessContext } from "../../../../contexts/BusinessContext";
 import { Link, Route, Switch, useParams } from "react-router-dom";
 import {
     Avatar,
@@ -16,7 +17,16 @@ import styled from "styled-components";
 import {
     useGetInfluencers,
     getInfluencers,
+    getInfluencerList,
+    getInfluencerDoc,
+    getInfluencerRef,
 } from "../../../../database/business/influencerModel";
+import {
+    useFirestoreDocument,
+    useFirestoreQuery,
+    useFirestoreQueryData,
+} from "@react-query-firebase/firestore";
+import { useQueries, useQuery } from "react-query";
 
 const Container = styled.div`
     display: flex;
@@ -47,33 +57,28 @@ const Body = styled.section`
     overflow: scroll;
 `;
 
-const TopInfluencers = ({ businessId }) => {
-    const [influencers, setInfluencers] = useState();
+const TopInfluencers = () => {
+    const business = useContext(BusinessContext);
+    const queryRef = getInfluencerList(business.businessId);
 
-    const influencersArr = useGetInfluencers(businessId);
+    const query = useFirestoreQueryData(["influencerList"], queryRef);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const result = await getInfluencers(influencersArr);
-            setInfluencers(result);
-        };
+    if (query.isLoading) {
+        return <div>Loading...</div>;
+    }
 
-        fetchData().catch((error) =>
-            console.log("Error at AllCustomersHome: ", error)
-        );
-    }, [influencersArr]);
-
-    console.log("business Id @ influencer: ", businessId);
-    console.log("Influence Arr: ", influencersArr);
-    console.log("inflencers: ", influencers);
+    const influencerList = query.data;
 
     return (
         <Container>
             <MainSection>
                 <Body>
                     <Header />
-                    {influencers?.map((influencer) => (
-                        <Customer influencer={influencer} />
+                    {influencerList?.map((influencer, index) => (
+                        <Customer
+                            key={index}
+                            customerId={influencer.customerId}
+                        />
                     ))}
                 </Body>
             </MainSection>
@@ -87,7 +92,7 @@ const TopInfluencers = ({ businessId }) => {
                                 placeItems: "center",
                             }}
                         >
-                            <CustomerWindow influencers={influencers} />
+                            <CustomerWindow />
                         </div>
                     </Route>
                     <Route path="/business/influencers">
@@ -178,24 +183,28 @@ const Header = () => {
     return (
         <HeaderContainer>
             <Search />
-            <div>Add Customer</div>
         </HeaderContainer>
     );
 };
 
-const CustomerWindow = ({ influencers }) => {
+const CustomerWindow = () => {
     const { customerId } = useParams();
 
-    // const customer = useGetCustomerById(customerId);
+    console.log("customerId: ", customerId);
 
-    const [customer, setCustomer] = useState();
+    const influencerRef = getInfluencerRef(customerId);
 
-    useEffect(() => {
-        setCustomer(influencers?.find((el) => el.id === customerId));
-    }, [customerId, influencers]);
+    const influencer = useFirestoreDocument(
+        ["influencer", customerId],
+        influencerRef
+    );
 
-    console.log("Member at customer window: ", influencers);
-    console.log("Customer at Customer HOme Customer: ", customer);
+    if (influencer.isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    const snapshot = influencer.data; // DocumentSnapshot
+
     return (
         <div
             style={{
@@ -214,7 +223,7 @@ const CustomerWindow = ({ influencers }) => {
                 src="https://placekitten.com/64/64"
                 sx={{ width: 76, height: 76 }}
             />
-            <h4>Display Name: {customer?.displayName}</h4>
+            <h4>Display Name: {snapshot.data().displayName}</h4>
             <div style={{ display: "flex" }}>
                 <div
                     style={{
@@ -223,16 +232,16 @@ const CustomerWindow = ({ influencers }) => {
                     }}
                 >
                     <div style={{ margin: "10px 0px" }}>
-                        First Name: {customer?.firstName}
+                        First Name: {snapshot.data().firstName}
                     </div>
                     <div style={{ margin: "10px 0px" }}>
-                        Last Name: {customer?.lastName}
+                        Last Name: {snapshot.data().lastName}
                     </div>
                     <div style={{ margin: "10px 0px" }}>
-                        cellNumber: {customer?.cellPhone}
+                        cellNumber: {snapshot.data().cellPhone}
                     </div>
                     <div style={{ margin: "10px 0px" }}>
-                        email: {customer?.email}
+                        email: {snapshot.data().email}
                     </div>
                 </div>
                 <div
@@ -248,7 +257,20 @@ const CustomerWindow = ({ influencers }) => {
     );
 };
 
-const Customer = ({ influencer }) => {
+const Customer = ({ customerId }) => {
+    const influencerRef = getInfluencerRef(customerId);
+
+    const influencer = useFirestoreDocument(
+        ["influencer", customerId],
+        influencerRef
+    );
+
+    if (influencer.isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    const snapshot = influencer.data; // DocumentSnapshot
+
     return (
         <div
             style={{
@@ -261,7 +283,7 @@ const Customer = ({ influencer }) => {
             }}
         >
             <Link
-                to={`/business/influencers/${influencer?.id}`}
+                to={`/business/influencers/${snapshot.id}`}
                 style={{ textDecoration: "none", color: "inherit" }}
             >
                 <div style={{ display: "flex", width: "50%" }}>
@@ -272,7 +294,7 @@ const Customer = ({ influencer }) => {
                         />
                     </ListItemAvatar>
                     <div style={{ fontWeight: "bold" }}>
-                        {influencer?.displayName}
+                        {snapshot.data().displayName}
                     </div>
                     <div style={{ display: "flex", marginLeft: "10px" }}>
                         <div
@@ -381,9 +403,9 @@ const Search = ({ setFilteredMembers, filteredMembers, originalMembers }) => {
     };
 
     return (
-        <div style={{ display: "flex" }}>
-            <FormControl fullWidth>
-                <InputLabel id="search-label">Search</InputLabel>
+        <div style={{ display: "flex", width: "100%" }}>
+            <FormControl sx={{ width: "160px" }}>
+                <InputLabel id="search-label">Search By: </InputLabel>
                 <Select
                     labelId="search-label"
                     id="demo-simple-select"
@@ -402,6 +424,7 @@ const Search = ({ setFilteredMembers, filteredMembers, originalMembers }) => {
                     Search
                 </InputLabel>
                 <OutlinedInput
+                    sx={{ width: "100%" }}
                     id="outlined-adornment-password"
                     type="text"
                     value={searchTerm}

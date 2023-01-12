@@ -71,4 +71,28 @@ const getInfluencers = async (InfluencersArray) => {
     return influencers;
 };
 
-export { useGetInfluencers, useGetCustomerById, getInfluencers };
+const getInfluencerList = (businessId) => {
+    const collectionRef = collection(
+        db,
+        `businesses/${businessId}/influencers`
+    );
+
+    return query(collectionRef);
+};
+
+const getInfluencerDoc = (influencerId) => {
+    return getDoc(doc(db, `customers/${influencerId}`));
+};
+
+const getInfluencerRef = (influencerId) => {
+    return doc(db, `customers/${influencerId}`);
+};
+
+export {
+    useGetInfluencers,
+    useGetCustomerById,
+    getInfluencers,
+    getInfluencerList,
+    getInfluencerDoc,
+    getInfluencerRef,
+};

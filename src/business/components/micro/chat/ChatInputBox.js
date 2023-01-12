@@ -1,3 +1,6 @@
+import { useContext } from "react";
+import { BusinessContext } from "../../../../contexts/BusinessContext";
+import { useFirestoreWriteBatch } from "@react-query-firebase/firestore";
 import { db } from "../../../../utils/db/firebaseConfig";
 import { useParams } from "react-router-dom";
 import {
@@ -15,12 +18,14 @@ import {
 
 function ChatInputBox({ businessId }) {
     const { cellphone } = useParams();
-    console.log("cellphone at chatInputBox: ", cellphone);
-    let customer = useGetCustomerByCellphone(cellphone);
-    let business = useGetDoc(`businesses/${businessId}`);
 
-    console.log("Customer at ChatInbox: ", customer);
-    console.log("Business: ", business);
+    const business = useContext(BusinessContext);
+
+    let customer = useGetCustomerByCellphone(cellphone);
+
+    const batch = writeBatch(db);
+
+    const mutation = useFirestoreWriteBatch(batch);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -29,8 +34,6 @@ function ChatInputBox({ businessId }) {
 
         if (value !== "") {
             try {
-                const batch = writeBatch(db);
-
                 // Adds Messag to be OutGoing Text Collection for Twilio
                 const outTextDocRef = doc(
                     collection(db, "outgoingTextMessages")
@@ -62,7 +65,8 @@ function ChatInputBox({ businessId }) {
                 });
 
                 // await batch.commit();
-                await batch.commit();
+                // await batch.commit();
+                mutation.mutate();
 
                 e.target.elements[0].value = "";
 

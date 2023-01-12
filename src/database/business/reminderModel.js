@@ -71,4 +71,12 @@ const getRemindersByCustomerId = async (customerId, businessId) => {
     return reminders;
 };
 
-export { useGetAllReminders, getRemindersByCustomerId };
+const getReminderCollectionRef = () => {
+    return collection(db, "notifications");
+};
+
+export {
+    useGetAllReminders,
+    getRemindersByCustomerId,
+    getReminderCollectionRef,
+};

@@ -52,7 +52,7 @@ const HeaderContainer = styled.div`
 const RecipientInput = styled.input`
     font: inherit;
     border: 1px solid transparent;
-
+    padding: 16px;
     &hover {
         border-color: #ccc;
     }
@@ -74,31 +74,78 @@ const InputNumber = () => {
 
     const businessId = "fpVAtpBjJLPUanlCydra";
 
-    const [cellphone, setCellphone] = useState("");
+    const [cellphone, setCellphone] = useState({
+        formatted: "",
+        raw: "",
+    });
 
     const handleCellChange = (e) => {
         e.preventDefault();
 
-        setCellphone(e.target.value);
+        // this is where we'll call our future formatPhoneNumber function that we haven't written yet.
+        const formattedPhoneNumber = formatPhoneNumber(e.target.value);
+        // we'll set the input value using our setInputValue
+
+        setCellphone({
+            formatted: formattedPhoneNumber,
+            raw: formattedPhoneNumber.replace(/[^\d]/g, ""),
+        });
+    };
+
+    const formatPhoneNumber = (value) => {
+        // if input value is falsy eg if the user deletes the input, then just return
+        if (!value) return value;
+
+        // clean the input for any non-digit values.
+        const phoneNumber = value.replace(/[^\d]/g, "");
+
+        // phoneNumberLength is used to know when to apply our formatting for the phone number
+        const phoneNumberLength = phoneNumber.length;
+
+        // we need to return the value with no formatting if its less then four digits
+        // this is to avoid weird behavior that occurs if you  format the area code to early
+
+        if (phoneNumberLength < 4) return phoneNumber;
+
+        // if phoneNumberLength is greater than 4 and less the 7 we start to return
+        // the formatted number
+        if (phoneNumberLength < 7) {
+            return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
+        }
+
+        // finally, if the phoneNumberLength is greater then seven, we add the last
+        // bit of formatting and return it.
+        return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+            3,
+            6
+        )}-${phoneNumber.slice(6, 10)}`;
     };
 
     const handleStartChatClick = async (e) => {
         e.preventDefault();
 
-        const response = await createChannelFromOneOff(businessId, cellphone);
+        if (cellphone.raw.length < 10) {
+            alert("Phone Num Incomplete");
+        } else {
+            const response = await createChannelFromOneOff(
+                businessId,
+                cellphone.raw
+            );
 
-        if (response !== "error") {
-            history.push(`/business/chat/${cellphone}`);
+            if (response !== "error") {
+                history.push(`/business/chat/${cellphone.raw}`);
+            }
         }
     };
 
-    console.log("celphone at Blast Welcome: ", cellphone);
+    console.log("celphone at Blast Welcome: ", cellphone.raw);
     return (
         <HeaderContainer>
             <InputWrapper>
                 <RecipientInput
                     placeholder="Enter Number"
                     onChange={handleCellChange}
+                    value={cellphone.formatted}
                 />
             </InputWrapper>
             <ConfirmButton onClick={handleStartChatClick}>

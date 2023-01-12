@@ -1,5 +1,7 @@
-import { useState } from "react";
-
+import { useState, useContext } from "react";
+import { BusinessContext } from "../../../../contexts/BusinessContext";
+import { useFirestoreCollectionMutation } from "@react-query-firebase/firestore";
+import { getReminderCollectionRef } from "../../../../database/business/reminderModel";
 import { Link } from "react-router-dom";
 import {
     Avatar,
@@ -16,7 +18,13 @@ import TimePicker from "./TimePicker";
 import moment from "moment";
 
 function ReminderSetReminder({ selectedCustomer, reminders }) {
-    const businessId = "fpVAtpBjJLPUanlCydra";
+    const addReminderCollectionRef = getReminderCollectionRef();
+
+    const addDocMutation = useFirestoreCollectionMutation(
+        addReminderCollectionRef
+    );
+    const business = useContext(BusinessContext);
+
     const [reminderMessage, setReminderMessage] = useState("");
     const [time, setTime] = useState({ hour: "", minute: "", meridiem: "" });
     const [date, setDate] = useState(null);
@@ -29,45 +37,36 @@ function ReminderSetReminder({ selectedCustomer, reminders }) {
     const onSubmit = async (e) => {
         e.preventDefault();
 
-        // if (selectedCustomer.firstName) {
-        //     const timeStr = `${time.hour}:${time.minute} ${time.meridiem}`;
+        if (selectedCustomer.firstName) {
+            const timeStr = `${time.hour}:${time.minute} ${time.meridiem}`;
 
-        //     const convertTime = (timeStr) => {
-        //         const [time, modifier] = timeStr.split(" ");
-        //         let [hours, minutes] = timeStr.split(":");
-        //         if (hours === "12") {
-        //             hours = "00";
-        //         }
-        //         if (modifier === "PM") {
-        //             hours = parseInt(hours, 10) + 12;
-        //         }
-        //         return `${hours}:${minutes.split(" ")[0]}`;
-        //     };
+            const convertTime = (timeStr) => {
+                const [time, modifier] = timeStr.split(" ");
+                let [hours, minutes] = timeStr.split(":");
+                if (hours === "12") {
+                    hours = "00";
+                }
+                if (modifier === "PM") {
+                    hours = parseInt(hours, 10) + 12;
+                }
+                return `${hours}:${minutes.split(" ")[0]}`;
+            };
 
-        //     const dataObj = {
-        //         customerId: selectedCustomer.id,
-        //         businessId: "fpVAtpBjJLPUanlCydra",
-        //         customerCell: selectedCustomer.cellNumber,
-        //         message: reminderMessage,
-        //         businessTwilioNumber: "+19144001284",
-        //         // sendOnDate: moment(date).format("l"),
-        //         sendOnTime: convertTime(timeStr),
-        //         createdOn: Timestamp.fromDate(new Date()),
-        //     };
+            const dataObj = {
+                customerId: selectedCustomer.id,
+                businessId: business.businessId,
+                customerCell: selectedCustomer.cellNumber,
+                message: reminderMessage,
+                businessTwilioNumber: "+19144001284",
+                // sendOnDate: moment(date).format("l"),
+                sendOnTime: convertTime(timeStr),
+                createdOn: new Date(),
+            };
 
-        //     const docRef = await addDoc(
-        //         collection(db, "notifications"),
-        //         dataObj
-        //     );
-
-        //     if (docRef.id) {
-        //         console.log("Notication Saved: ", docRef.id);
-        //     }
-
-        //     console.log("Add Reminder Data Obj: ", dataObj);
-        // } else {
-        //     alert("Selected a Customer first");
-        // }
+            addDocMutation.mutate(dataObj);
+        } else {
+            alert("Selected a Customer first");
+        }
     };
 
     return (
@@ -106,13 +105,17 @@ function ReminderSetReminder({ selectedCustomer, reminders }) {
                     />
                 </div>
                 <div>
+                    {addDocMutation.isError && (
+                        <p>{addDocMutation.error.message}</p>
+                    )}
                     <Button
+                        disabled={addDocMutation.isLoading}
                         sx={{ width: "100%" }}
                         variant="contained"
                         color="primary"
                         onClick={onSubmit}
                     >
-                        Submit
+                        {addDocMutation.isLoading ? "...Sending" : "Submit"}
                     </Button>
                     <div
                         style={{

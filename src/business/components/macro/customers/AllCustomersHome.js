@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { BusinessContext } from "../../../../contexts/BusinessContext";
 import { Link, Route, Switch, useParams, useHistory } from "react-router-dom";
 import {
     Avatar,
@@ -15,11 +16,18 @@ import SearchIcon from "@mui/icons-material/Search";
 import styled from "styled-components";
 
 import {
+    businessCustomerListQuery,
+    getCustomer,
+    getCustomerRef,
     getCustomers,
     useGetBusinessCustomers,
 } from "../../../../database/business/businessModel";
 
 import AddCustomer from "../../micro/customers/AddCustomer";
+import {
+    useFirestoreDocument,
+    useFirestoreQueryData,
+} from "@react-query-firebase/firestore";
 
 const Container = styled.div`
     display: flex;
@@ -50,21 +58,20 @@ const Body = styled.section`
     overflow: scroll;
 `;
 
-const AllCustomersHome = ({ businessId }) => {
-    const [members, setMembers] = useState();
+const AllCustomersHome = () => {
+    const business = useContext(BusinessContext);
 
-    const memberIds = useGetBusinessCustomers(businessId);
+    const queryRef = businessCustomerListQuery(business.businessId);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const customers = await getCustomers(memberIds);
-            setMembers(customers);
-        };
+    const query = useFirestoreQueryData(["customerList"], queryRef);
 
-        fetchData().catch((error) =>
-            console.log("Error at AllCustomersHome: ", error)
-        );
-    }, [memberIds]);
+    if (query.isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    const customerList = query.data;
+
+    console.log("CustomerList: ", customerList);
     return (
         <Container>
             <Switch>
@@ -75,8 +82,8 @@ const AllCustomersHome = ({ businessId }) => {
                     <MainSection>
                         <Body>
                             <Header />
-                            {members?.map((member) => (
-                                <Customer member={member} />
+                            {customerList?.map((customer) => (
+                                <Customer customer={customer.customer} />
                             ))}
                         </Body>
                     </MainSection>
@@ -90,7 +97,7 @@ const AllCustomersHome = ({ businessId }) => {
                                         placeItems: "center",
                                     }}
                                 >
-                                    <CustomerWindow members={members} />
+                                    <CustomerWindow />
                                 </div>
                             </Route>
                             <Route path="/business/customers">
@@ -186,7 +193,7 @@ const Header = () => {
         <HeaderContainer>
             <Search />
             <div
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", marginLeft: "35px" }}
                 onClick={() => history.push("/business/customers/add")}
             >
                 Add Customer
@@ -195,19 +202,22 @@ const Header = () => {
     );
 };
 
-const CustomerWindow = ({ members }) => {
+const CustomerWindow = () => {
     const { customerId } = useParams();
 
-    // const customer = useGetCustomerById(customerId);
+    const customerRef = getCustomerRef(customerId);
 
-    const [customer, setCustomer] = useState();
+    const customer = useFirestoreDocument(
+        ["customer", customerId],
+        customerRef
+    );
 
-    useEffect(() => {
-        setCustomer(members?.find((el) => el.id === customerId));
-    }, [customerId, members]);
+    if (customer.isLoading) {
+        return <div>Loading...</div>;
+    }
 
-    console.log("Member at customer window: ", members);
-    console.log("Customer at Customer HOme Customer: ", customer);
+    const snapshot = customer.data;
+
     return (
         <div
             style={{
@@ -226,7 +236,7 @@ const CustomerWindow = ({ members }) => {
                 src="https://placekitten.com/64/64"
                 sx={{ width: 76, height: 76 }}
             />
-            <h4>Display Name: {customer?.displayName}</h4>
+            <h4>Display Name: {snapshot.data().displayName}</h4>
             <div style={{ display: "flex" }}>
                 <div
                     style={{
@@ -235,16 +245,16 @@ const CustomerWindow = ({ members }) => {
                     }}
                 >
                     <div style={{ margin: "10px 0px" }}>
-                        First Name: {customer?.firstName}
+                        First Name: {snapshot.data().firstName}
                     </div>
                     <div style={{ margin: "10px 0px" }}>
-                        Last Name: {customer?.lastName}
+                        Last Name: {snapshot.data().lastName}
                     </div>
                     <div style={{ margin: "10px 0px" }}>
-                        cellNumber: {customer?.cellPhone}
+                        cellNumber: {snapshot.data().cellPhone}
                     </div>
                     <div style={{ margin: "10px 0px" }}>
-                        email: {customer?.email}
+                        email: {snapshot.data().email}
                     </div>
                 </div>
                 <div
@@ -260,7 +270,23 @@ const CustomerWindow = ({ members }) => {
     );
 };
 
-const Customer = ({ member }) => {
+const Customer = ({ customer }) => {
+    console.log("CustomerId at Customer: ", customer);
+
+    const customerRef = getCustomer(customer.path);
+
+    const customerDoc = useFirestoreDocument(
+        ["customer", customer.id],
+        customerRef
+    );
+
+    if (customerDoc.isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    const snapshot = customerDoc.data;
+
+    console.log("snapshot: ", snapshot);
     return (
         <div
             style={{
@@ -273,7 +299,7 @@ const Customer = ({ member }) => {
             }}
         >
             <Link
-                to={`/business/customers/${member.id}`}
+                to={`/business/customers/${snapshot.id}`}
                 style={{ textDecoration: "none", color: "inherit" }}
             >
                 <div style={{ display: "flex", width: "50%" }}>
@@ -284,7 +310,7 @@ const Customer = ({ member }) => {
                         />
                     </ListItemAvatar>
                     <div style={{ fontWeight: "bold" }}>
-                        {member.displayName}
+                        {snapshot.data().displayName}
                     </div>
                     <div style={{ display: "flex", marginLeft: "10px" }}>
                         <div
@@ -337,13 +363,13 @@ const Customer = ({ member }) => {
                         }}
                     >
                         <div style={{ margin: "10px 0px" }}>
-                            First Name: {member.firstName}
+                            First Name: {snapshot.data().firstName}
                         </div>
                         <div style={{ margin: "10px 0px" }}>
-                            Last Name: {member.lastName}
+                            Last Name: {snapshot.data().lastName}
                         </div>
                         <div style={{ margin: "10px 0px" }}>
-                            cellNumber: {member.cellPhone}
+                            cellNumber: {snapshot.data().cellPhone}
                         </div>
                         <div style={{ margin: "10px 0px" }}>
                             email: member.email
@@ -393,9 +419,9 @@ const Search = ({ setFilteredMembers, filteredMembers, originalMembers }) => {
     };
 
     return (
-        <div style={{ display: "flex" }}>
-            <FormControl fullWidth>
-                <InputLabel id="search-label">Search</InputLabel>
+        <div style={{ display: "flex", width: "100%" }}>
+            <FormControl sx={{ width: "160px" }}>
+                <InputLabel id="search-label">Search By: </InputLabel>
                 <Select
                     labelId="search-label"
                     id="demo-simple-select"
@@ -414,6 +440,7 @@ const Search = ({ setFilteredMembers, filteredMembers, originalMembers }) => {
                     Search
                 </InputLabel>
                 <OutlinedInput
+                    sx={{ width: "100%" }}
                     id="outlined-adornment-password"
                     type="text"
                     value={searchTerm}

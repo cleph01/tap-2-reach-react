@@ -1,6 +1,8 @@
 import React from "react";
 import { Route } from "react-router-dom";
 
+import { useFirestoreQueryData } from "@react-query-firebase/firestore";
+
 import ReminderHome from "../macro/reminder/ReminderHome";
 import BlastHome from "../macro/blast/BlastHome";
 import HomeBody from "../macro/home/HomeBody";
@@ -10,11 +12,16 @@ import TopInfluencers from "../macro/influencers/TopInfluencers";
 import AllCustomersHome from "../macro/customers/AllCustomersHome";
 import PromotionsHome from "../macro/promotions/PromotionsHome";
 
+import { db } from "../../../utils/db/firebaseConfig";
+
 import styled from "styled-components";
+import { businessCustomerListQuery } from "../../../database/business/businessModel";
 const Container = styled.section`
     flex: 1;
 `;
 function Main({ businessId }) {
+   
+
     return (
         <Container>
             <Route exact path="/">

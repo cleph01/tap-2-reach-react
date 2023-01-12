@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { useFirestoreQueryData } from "@react-query-firebase/firestore";
 import {
     collection,
     query,
@@ -133,6 +133,17 @@ const useGetBusinessCustomers = (businessId) => {
 
     return members;
 };
+
+// const getBusinessCustomers = (businessId) => {
+
+//         const collectionRef = collection(db, "business-customer-relationship");
+
+//         let q = query(collectionRef, where("businessId", "==", businessId));
+
+//         const query = useFirestoreQueryData(["products"], q);
+
+//     return members;
+// };
 
 // Get All Customers by Customer id / Path
 const getCustomers = async (customers) => {
@@ -292,6 +303,24 @@ const createSmsGroup = async (businessId, groupName) => {
     }
 };
 
+const businessCustomerListQuery = (businessId) => {
+    return query(
+        collection(db, "business-customer-relationship"),
+        where("businessId", "==", businessId)
+    );
+};
+
+const getCustomer = (path) => {
+    return doc(db, path);
+};
+
+const getCustomerRef = (customerId) => {
+    return doc(db, `customers/${customerId}`);
+};
+const getBusiness = (businessId) => {
+    return doc(db, `businesses/${businessId}`);
+};
+
 export {
     useGetChatChannels,
     useGetDoc,
@@ -299,9 +328,13 @@ export {
     useGetBusinessCustomers,
     createChannelFromMember,
     createChannelFromOneOff,
-    getCustomers,
     useGetAllGroups,
     useGetCustomerGroups,
     createSmsGroup,
     useGetCustomerByCellphone,
+    businessCustomerListQuery,
+    getCustomers,
+    getCustomer,
+    getCustomerRef,
+    getBusiness,
 };

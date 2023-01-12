@@ -1,4 +1,6 @@
+import { useFirestoreDocument } from "@react-query-firebase/firestore";
 import styled from "styled-components";
+import { getBusiness } from "../../../../database/business/businessModel";
 
 const Container = styled.div`
     display: flex;
@@ -12,9 +14,26 @@ const DetailsWrapper = styled.article`
 `;
 
 function HomeBody() {
+    const businessId = "fpVAtpBjJLPUanlCydra";
+
+    // Access the client
+    const queryRef = getBusiness(businessId);
+
+    // Provide the query to the hook
+    const query = useFirestoreDocument(["business"], queryRef);
+
+    if (query.isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    const business = query.data;
+
     return (
         <Container>
-            <h1>Help your customers help you grow your business.</h1>
+            <h1>
+                Welcome {business.businessName}!! Help your customers help you
+                grow your business.
+            </h1>
             <h2>
                 Modern Easy-to-use tools to help customers reach, promote, and
                 help YOU grow.

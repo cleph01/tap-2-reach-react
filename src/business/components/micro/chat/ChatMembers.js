@@ -12,15 +12,32 @@ import {
     useGetBusinessCustomers,
     useGetDoc,
     createChannelFromMember,
+    businessCustomerListQuery,
+    getCustomer,
 } from "../../../../database/business/businessModel";
 
 import "../../../../styles/components/micro/chat/members.scss";
 
 import SearchIcon from "@mui/icons-material/Search";
+import {
+    useFirestoreDocument,
+    useFirestoreQueryData,
+} from "@react-query-firebase/firestore";
 
 function Members({ businessId }) {
-    const members = useGetBusinessCustomers(businessId);
-    console.log("Members: ", members);
+    // Access the client
+    const queryRef = businessCustomerListQuery(businessId);
+
+    // Provide the query to the hook
+    const query = useFirestoreQueryData(["businessCustomers"], queryRef);
+
+    if (query.isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    const members = query.data;
+
+    console.log("customers in Chat members: ", members);
     return (
         <div>
             <Search />
@@ -46,9 +63,18 @@ function Members({ businessId }) {
 }
 
 const Member = ({ member, businessId }) => {
-    console.log("memmbers at memeber: ", member);
-    const memberData = useGetDoc(member.customer.path);
-    console.log("MemberData; ", memberData);
+    const queryRef = getCustomer(member.customer.path);
+
+    const query = useFirestoreDocument(
+        ["customer", member.customer.path],
+        queryRef
+    );
+
+    if (query.isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    const memberData = query.data; // DocumentSnapshot
 
     return (
         <div
@@ -57,13 +83,13 @@ const Member = ({ member, businessId }) => {
                 createChannelFromMember(
                     businessId,
                     member.customer.id,
-                    memberData.cellPhone
+                    memberData.data().cellPhone
                 )
             }
             className="Member"
         >
             <div className="MemberStatus offline" />
-            {memberData?.displayName}
+            {memberData.data().displayName}
         </div>
     );
 };
